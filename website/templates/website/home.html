@@ -1,0 +1,36 @@
+{% extends "website/base.html" %}
+{% load static %}
+{% block title %}Home | Spectrum Technologies{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-text">
+        <h1>Powering Spaces. Enhancing Visibility.</h1>
+        <p>Premium LED lighting solutions engineered for industrial, commercial and outdoor applications. 
+            Built to illuminate what matters - reliably, efficiently, beautifully.</p>
+        <a href="{% url 'products_list' %}" class="btn-primary">Explore Products</a>
+    </div>
+    <div class="hero-videos">
+        <video id="heroVideo" autoplay muted playsinline>
+            <source src="{% static 'videos/highbay.mp4' %}" type="video/mp4">
+        </video>
+
+    </div>
+</section>
+<section class="bestsellers" id="products">
+    <h2>Best Sellers</h2>
+    <div class="product-grid">
+        {% for product in bestsellers %}
+        <div class="product-card">
+            <a href="{% url 'product_detail' product.id %}" class="product-card-link">
+                <img src="{{ product.cover_image }}" alt="{{ product.name }}">
+                <h3>{{ product.name }}</h3>
+                <p class="price">₹{{ product.price }}</p>
+                <p class="desc">{{ product.description }}</p>
+            </a>
+            <a href="{% url 'buy_now' product.id %}" class="btn-primary">Buy Now</a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

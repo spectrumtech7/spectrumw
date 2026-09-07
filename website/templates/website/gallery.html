@@ -1,0 +1,45 @@
+{% extends "website/base.html" %}
+{% block title %}Gallery | Spectrum Technologies{% endblock %}
+
+{% block content %}
+<section class="contact-section">
+    <h2>Product Gallery</h2>
+
+    <div class="gallery-jump">
+        <select onchange="if(this.value) window.location.hash=this.value;">
+            <option value="">Jump to category...</option>
+        {% for category in categories %}
+            <option value = "cat-{{category.id}}">{{category.name}}</option>
+            <!-- <a href="#cat-{{ category.id }}">{{ category.name }}</a> -->
+        {% endfor %}
+        </select>
+    </div>
+
+    <div class="category-grid">
+        {% for category in categories %}
+        <div class="category-card" id="cat-{{ category.id }}">
+            <h3>{{ category.name }}</h3>
+            <div class="carousel-wrapper">
+                <button class="carousel-arrow left" onclick="scrollCarousel(this, -1)">&#10094;</button>
+                <div class="gallery-carousel">
+                    <div class="carousel-track">
+                    {% for item in category.items.all %}
+                        {% if item.media_type == 'image' %}
+                            <img src="{{ item.media_file.url }}" alt="{{ item.caption }}" class="gallery-media">
+                        {% else %}
+                            <video src="{{ item.media_file.url }}" controls class="gallery-media"></video>
+                        {% endif %}
+                    {% empty %}
+                        <p>No items yet in this category.</p>
+                    {% endfor %}
+                </div>
+                </div>
+                <button class="carousel-arrow right" onclick="scrollCarousel(this, 1)">&#10095;</button>
+            </div>
+        </div>
+        {% empty %}
+            <p style="text-align:center;">No gallery categories yet.</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "website/base.html" %}
+{% block title %}Team Login | Spectrum Technologies{% endblock %}
+
+{% block content %}
+<section class="contact-section" style="max-width: 400px;">
+    <h2>Team Login</h2>
+    {% if error %}
+        <p style="color: red; text-align: center;">{{ error }}</p>
+    {% endif %}
+    <form method="POST" class="contact-form">
+        {% csrf_token %}
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit" class="btn-primary">Log In</button>
+    </form>
+</section>
+{% endblock %}

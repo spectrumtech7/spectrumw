@@ -1,0 +1,40 @@
+{% extends "website/base.html" %}
+{% load static %}
+{% block title %}Contact Us | Spectrum Technologies{% endblock %}
+
+{% block content %}
+<section class="contact-section">
+    <h2>Get In Touch</h2>
+    <div class="contact-wrapper">
+
+        <form method="POST" class="contact-form">
+            {% csrf_token %}
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="phone" required>
+
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for = "location">Location (City)</label>
+            <input type="text" id="location" name="location" placeholder="e.g. Vapi, Gujarat">            
+            
+            <label for="message">Message (optional)</label>
+            <textarea id="message" name="message" rows="4"></textarea>
+
+            <button type="submit" class="btn-primary">Send Message</button>
+        </form>
+
+        <div class="contact-map">
+            <iframe
+                src="https://www.google.com/maps?q=Plot+No.+196,+Vibrant+Business+Park,+Vapi,+Gujarat+396195&output=embed"
+                width="100%" height="350" style="border:0; border-radius: 16px;"
+                allowfullscreen="" loading="lazy">
+            </iframe>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

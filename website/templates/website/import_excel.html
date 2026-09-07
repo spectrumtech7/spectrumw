@@ -1,0 +1,20 @@
+{% extends "website/base.html" %}
+{% block title %}Import Excel | Spectrum Technologies{% endblock %}
+
+{% block content %}
+<section class="contact-section" style="max-width: 500px;">
+    <h2>Import Customer Data</h2>
+    <p style="text-align:center; margin-bottom:20px; color:#4a5568;">
+        Upload an Excel file with columns in this order: Name, Phone, Email, Location, Message. First row should be headers.
+    </p>
+    <form method="POST" enctype="multipart/form-data" class="contact-form">
+        {% csrf_token %}
+        <label for="excel_file">Excel File (.xlsx)</label>
+        <input type="file" id="excel_file" name="excel_file" accept=".xlsx" required>
+        <button type="submit">Import</button>
+    </form>
+    <div class="dashboard-actions" style="justify-content:center; margin-top:20px;">
+        <a href="{% url 'dashboard' %}">← Back to Dashboard</a>
+    </div>
+</section>
+{% endblock %}

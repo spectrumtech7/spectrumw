@@ -1,0 +1,23 @@
+{% extends "website/base.html" %}
+{% block title %}{{ category.name }} | Spectrum Technologies{% endblock %}
+
+{% block content %}
+<section class="bestsellers">
+    <h2>{{ category.name }}</h2>
+    <div class="product-grid">
+    {% for product in products %}
+    <div class="product-card">
+        <a href="{% url 'product_detail' product.id %}" class="product-card-link">
+            <img src="{{ product.cover_image }}" alt="{{ product.name }}">
+            <h3>{{ product.name }}</h3>
+            <p class="price">₹{{ product.price }}</p>
+            <p class="desc">{{ product.description }}</p>
+        </a>
+        <a href="{% url 'buy_now' product.id %}" class="btn-primary">Buy Now</a>
+    </div>
+    {% empty %}
+        <p style="text-align:center;">No products in this category yet.</p>
+    {% endfor %}
+</div>
+</section>
+{% endblock %}

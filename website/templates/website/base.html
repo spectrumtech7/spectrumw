@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Spectrum Technologies{% endblock %}</title>
+    {% load static %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">
+            <img src="{% static 'images/logo.png' %}" alt="Spectrum Technologies">
+        </div>
+        <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="/">Home</a></li>
+            <li><a href="{% url 'products_list' %}">Products</a></li>
+            <li><a href="{% url 'gallery' %}">Gallery</a></li>
+            <li><a href="{% url 'about' %}">About</a></li>
+            <li><a href="{% url 'contact' %}">Contact</a></li>
+            <li><a href="{% url 'view_cart' %}"><i class="fa-solid fa-cart-shopping"></i></a></li>
+        </ul>
+    </nav>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+    <div class="footer-content">
+        <div class="footer-col">
+            <img src="{% static 'images/logo.png' %}" alt="Spectrum Technologies" class="footer-logo">
+            <p>Premium LED lighting solutions engineered for performance, efficiency, and durability.</p>
+            <div class="social-links">
+                <a href="https://instagram.com/suraj.jaiswal.1212" target="_blank" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://facebook.com/SpectrumTechnologies" target="_blank" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+                <a href="https://wa.me/918866264064" target="_blank" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+            </div>
+        </div>
+
+        <div class="footer-col">
+            <h4>Quick Links</h4>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="#products">Products</a></li>
+                <li><a href="#gallery">Gallery</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="{% url 'contact' %}">Contact</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4>Contact Us</h4>
+            <p>Email: spectrumtech7@gmail.com</p>
+            <p>Phone: +91 8866264064</p>
+            <p>Address: Plot No. 196, Vibrant Business Park, Opp.UPL, NH No.48, Near TATA Motor Showroom Vapi, Gujarat - 396195</p>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>&copy; 2026 Spectrum Technologies. All rights reserved.|
+            <a href="{% url 'privacy_policy' %}" style="color:rgba(255, 255, 255, 0.7);">Privacy Policy</a> |
+            <a href="{% url 'terms_conditions' %}" style="color:rgba(255, 255, 255, 0.7);">Terms & Conditions</a>
+        </p>
+    </div>
+</footer>
+
+    <script>
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const navLinks = document.getElementById('navLinks');
+        hamburgerBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            hamburgerBtn.classList.toggle('active');
+        });
+    </script>
+    <script>
+    function moveCarousel(carousel, direction) {
+        const track = carousel.querySelector('.carousel-track');
+        const items = track.children;
+        let index = parseInt(track.dataset.index || 0);
+        index = (index + direction + items.length) % items.length;
+        track.dataset.index = index;
+        track.style.transform = `translateX(-${index * 100}%)`;
+    }
+
+    function scrollCarousel(button, direction) {
+        const wrapper = button.closest('.carousel-wrapper');
+        const carousel = wrapper.querySelector('.gallery-carousel');
+        moveCarousel(carousel, direction);
+    }
+
+    document.querySelectorAll('.gallery-carousel').forEach(carousel => {
+        carousel.querySelectorAll('video').forEach(video => {
+            video.addEventListener('play', () => carousel.dataset.videoPlaying = 'true');
+            video.addEventListener('pause', () => carousel.dataset.videoPlaying = 'false');
+            video.addEventListener('ended', () => carousel.dataset.videoPlaying = 'false');
+        });
+
+        setInterval(() => {
+            if (carousel.dataset.videoPlaying === 'true') return;
+            moveCarousel(carousel, 1);
+        }, 4500);
+    });
+</script>
+
+<script>
+    const heroPlaylist=[
+        "{% static 'videos/highbay.mp4' %}",
+        "{% static 'videos/light.mp4' %}",
+        "{% static 'videos/street.mp4' %}"
+    ];
+    let heroIndex = 0;
+    const heroVideoEl = document.getElementById('heroVideo');
+
+    if(heroVideoEl){
+        heroVideoEl.addEventListener('ended', () => {
+            heroIndex = (heroIndex + 1) % heroPlaylist.length;
+            heroVideoEl.src = heroPlaylist[heroIndex];
+            heroVideoEl.play();
+        });
+    }
+
+</script>
+    
+</body>
+</html>

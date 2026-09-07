@@ -1,0 +1,51 @@
+{% extends "website/base.html" %}
+{% block title %}{{ product.name }} | Spectrum Technologies{% endblock %}
+
+{% block content %}
+<section class="contact-section">
+    <div class="product-detail">
+        <div class="product-gallery">
+            <div class="carousel-wrapper">
+                <button class="carousel-arrow left" onclick="scrollCarousel(this, -1)">&#10094;</button>
+                <div class="gallery-carousel">
+                    <div class="carousel-track">
+                    {% for img in images %}
+                        <img src="{{ img.image.url }}" alt="{{ product.name }} - {{ img.angle }}" class="gallery-media">
+                    {% endfor %}
+                    {% for vid in videos %}
+                        <video src="{{ vid.video.url }}" controls class="gallery-media"></video>
+                    {% endfor %}
+                    </div>
+                </div>
+                <button class="carousel-arrow right" onclick="scrollCarousel(this, 1)">&#10095;</button>
+            </div>
+        </div>
+
+        <div class="product-info">
+            <h2>{{ product.name }}</h2>
+            <p class="price">₹{{ product.price }}</p>
+            <p class="desc">{{ product.description }}</p>
+
+            <div class="product-actions">
+                <a href="{% url 'buy_now' product.id %}" class="btn-primary">Buy Now</a>
+                 <a href="{% url 'add_to_cart' product.id %}" class="btn-primary">Add to Cart</a> 
+                 <button onclick="document.getElementById('specTable').classList.toggle('open')" class='btn-primary'>View Full Specifications</button>
+            </div>
+            <div class="spec-toggle">
+                <table id="specTable" class="spec-table">
+                    {% for spec in specifications %}
+                    <tr>
+                        <td class="spec-label">{{ spec.label }}</td>
+                        <td class="spec-value">{{ spec.value }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="2">No specifications added yet.</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

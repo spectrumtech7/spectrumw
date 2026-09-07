@@ -1,0 +1,25 @@
+{% extends "website/base.html" %}
+{% block title %}Products | Spectrum Technologies{% endblock %}
+
+{% block content %}
+<section class="bestsellers">
+    <h2>Our Products</h2>
+    <div class="product-grid">
+        {% for category in categories %}
+        <a href="{% url 'category_products' category.id %}" class="product-card-link">
+            <div class="product-card">
+                {% with category.products.first as first_product %}
+                    {% if first_product %}
+                        <img src="{{ first_product.cover_image }}" alt="{{ category.name }}">
+                    {% endif %}
+                {% endwith %}
+                <h3>{{ category.name }}</h3>
+                <p class="desc">{{ category.products.count }} models available</p>
+            </div>
+        </a>
+        {% empty %}
+            <p style="text-align:center;">No categories yet.</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

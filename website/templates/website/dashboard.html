@@ -1,0 +1,56 @@
+{% extends "website/base.html" %}
+{% block title %}My Leads | Spectrum Technologies{% endblock %}
+
+{% block content %}
+<section class="contact-section">
+    <h2>Welcome, {{ name }}</h2>
+    <div class="dashboard-actions">
+        <a href="{% url 'team_logout' %}">Log out</a>
+        <a href="{% url 'add_lead'%}" class="btn-primary">+Add Lead</a>
+        <a href="{% url 'export_leads' %}" class="btn-primary">Export Leads</a>
+        <a href="{% url 'import_excel' %}" class="btn-primary">Import Leads</a>
+    </div>
+
+    <table style="width:100%; margin-top: 30px; border-collapse: collapse;">
+        <tr style="background: rgba(33,150,243,0.1);">
+            <th style="padding:10px; text-align:center;">Name</th>
+            <th style="padding:10px; text-align:center;">Phone</th>
+            <th style="padding:10px; text-align:center;">Email</th>
+            <th style="padding:10px; text-align:center;">Location</th>
+            <th style="padding:10px; text-align:center;">Message</th>
+            <th style="padding:10px; text-align:center;">Status</th>
+        </tr>
+        {% for lead in leads %}
+        <tr style="border-bottom: 1px solid #ddd;">
+            <td style="padding:10px;">{{ lead.name }}</td>
+            <td style="padding:10px;">
+                {{ lead.phone }}
+                <a href="https://wa.me/{{ lead.whatsapp_number }}" target="_blank" class="whatsapp-btn" aria-label="WhatsApp">
+                    <i class="fa-brands fa-whatsapp"></i>
+                </a>
+            </td>
+            <td style="padding:10px;">{{ lead.email }}</td>
+            <td style="padding:10px;">{{ lead.location|default:"—" }}</td>
+            <td style="padding:10px;">{{ lead.message|default:"—" }}</td>
+            <td style="padding:10px;">
+                <form method="POST" style="display:flex; gap:6px;">
+                    {% csrf_token %}
+                    <input type="hidden" name="lead_id" value="{{ lead.id }}">
+                    <select name="new_status">
+                        <option value="new" {% if lead.status == 'new' %}selected{% endif %}>New</option>
+                        <option value="contacted" {% if lead.status == 'contacted' %}selected{% endif %}>Contacted</option>
+                        <option value="closed" {% if lead.status == 'closed' %}selected{% endif %}>Closed</option>
+                    </select>
+                    <button type="submit">Update</button>
+                </form>
+                <a href = "{% url 'delete_lead' lead.id %}" onclick="return confirm('Delete this lead permanently?');" style="color:#e53935; font-size:0.85rem; margin-top:6px; display: inline-block;">
+                    Delete
+                </a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" style="padding:20px; text-align:center;">No leads assigned yet.</td></tr>
+        {% endfor %}
+    </table>
+</section>
+{% endblock %}
