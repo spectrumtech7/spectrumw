@@ -5,5 +5,7 @@ venv/
 __pycache__/
 *.py[cod]
 db.sqlite3
-data_backup.json
 .vscode/
+staticfiles/
+data_backup_temp.json
+spectrumw/data_backup.json
