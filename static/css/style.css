@@ -888,9 +888,59 @@ table button:hover {
         flex-wrap: wrap;
     }
 
+    .footer{
+        padding: 25px 20px 15px;
+        margin-top: 30px;
+    }
+
     .footer-content {
-        flex-direction: column;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px 10px;
         text-align: center;
+        margin-bottom: 15px;
+    }
+
+    .footer-col:nth-child(3){
+        grid-column: 1 / -1;
+    }
+    
+    .footer-col{
+        margin-bottom: 10px;
+    }
+
+    .footer-logo{
+        height: 45px;
+        margin-bottom: 8px;
+    }
+
+    .footer-col p{
+        margin-bottom: 5px;
+        line-height: 1.4;
+    }
+
+    .footer-col h4{
+        margin-bottom: 8px;
+    }
+
+    .footer-col ul li{
+        margin-bottom: 5px;
+    }
+
+    .social-links{
+        gap: 10px;
+        margin-top: 8px;
+        justify-content: center;
+    }
+
+    .social-links a{
+        width: 36px;
+        height: 36px;
+        font-size: 1.2rem;
+    }
+
+    .footer-bottom{
+        padding-top: 12px;
     }
 
     .contact-wrapper {
