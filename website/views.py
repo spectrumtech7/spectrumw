@@ -183,9 +183,20 @@ def about(request):
 def add_to_cart(request, product_id):
     cart = request.session.get('cart', {})
     product_id_str = str(product_id)
-    cart[product_id_str] = cart.get(product_id_str, 0) + 1
+
+    current_quantity = cart.get(product_id_str, 0)
+
+    if current_quantity < 3000:
+        cart[product_id_str] = current_quantity + 1
+
     request.session['cart'] = cart
     return redirect('view_cart')
+# def add_to_cart(request, product_id):
+#     cart = request.session.get('cart', {})
+#     product_id_str = str(product_id)
+#     cart[product_id_str] = cart.get(product_id_str, 0) + 1
+#     request.session['cart'] = cart
+#     return redirect('view_cart')
 
 def view_cart(request):
     cart = request.session.get('cart', {})
@@ -211,14 +222,33 @@ def remove_from_cart(request, product_id):
 
 def update_cart_quantity(request, product_id):
     if request.method == 'POST':
-        quantity = int(request.POST.get('quantity', 1))
+        try:
+            quantity = int(request.POST.get('quantity', 1))
+        except (ValueError, TypeError):
+            quantity = 1
+
         cart = request.session.get('cart', {})
-        if quantity > 0:
+
+        if 1 <= quantity <= 3000:
             cart[str(product_id)] = quantity
+        elif quantity > 3000:
+            cart[str(product_id)] = 3000
         else:
             cart.pop(str(product_id), None)
+
         request.session['cart'] = cart
+
     return redirect('view_cart')
+# def update_cart_quantity(request, product_id):
+#     if request.method == 'POST':
+#         quantity = int(request.POST.get('quantity', 1))
+#         cart = request.session.get('cart', {})
+#         if quantity > 0:
+#             cart[str(product_id)] = quantity
+#         else:
+#             cart.pop(str(product_id), None)
+#         request.session['cart'] = cart
+#     return redirect('view_cart')
 
 def checkout_cart(request):
     cart = request.session.get('cart', {})

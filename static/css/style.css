@@ -10,6 +10,12 @@ body {
     background: linear-gradient(135deg, #eaf6ff 0%, #ffffff 50%, #e0f0ff 100%);
     color: #1a2b3c;
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main{
+    flex: 1;
 }
 
 /* ===== Navbar ===== */
