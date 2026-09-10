@@ -852,6 +852,20 @@ table button:hover {
     text-align: center;
 }
 
+.product-card .view-details{
+    display: inline-block;
+    margin-top: 12px;
+    color: #0a4d8c;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.product-card .view-details:hover{
+    color: #2196f3;
+}
+
 .nav-links .fa-cart-shopping{
     font-size: 1.2rem;
 }

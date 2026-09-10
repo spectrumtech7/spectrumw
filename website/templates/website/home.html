@@ -28,7 +28,7 @@
                 <p class="price">₹{{ product.price }}</p>
                 <p class="desc">{{ product.description }}</p>
             </a>
-            <a href="{% url 'buy_now' product.id %}" class="btn-primary">Buy Now</a>
+            <a href="{% url 'product_detail' product.id %}" class="view-details">View Details →</a>
         </div>
         {% endfor %}
     </div>
