@@ -89,6 +89,7 @@ class ProductVideo(models.Model):
     product = models.ForeignKey(Product, on_delete = models.CASCADE, related_name='videos')
     video = models.FileField(upload_to='product_videos/')
 
+
     def __str__(self):
         return f"{self.product.name} - video"
 
