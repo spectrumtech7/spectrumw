@@ -970,4 +970,24 @@ table button:hover {
     .category-grid {
         grid-template-columns: 1fr;
     }
+
+    @media (max-width: 768px) {
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    table th,
+    table td {
+        padding: 8px;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .cart-section input[type="number"] {
+        width: 50px;
+    }
+    }
 }
