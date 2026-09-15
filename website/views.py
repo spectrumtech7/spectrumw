@@ -36,7 +36,7 @@ def staff_access(request):
     if request.method == 'POST':
         code = request.POST.get('code')
 
-        if code == os.getenv('STAFF_ACCESS_PASSWORD'):
+        if code == os.getenv('STAFF_ACCESS_CODE'):
             response = redirect('home')
             response.set_cookie(
                 'staff_no_popup',
