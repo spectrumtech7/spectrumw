@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .models import Product, ContactMessage, GalleryCategory,BuyNowClick, ProductCategory
+from .models import PopupLead, Product, ContactMessage, GalleryCategory,BuyNowClick, ProductCategory
 
 
 MARKETING_TEAM = ["Hetal Dodhi", "Komal Wagh", "Bhagyashree Sonar", "Mamta Vishwakarma"]  # replace with real names
@@ -315,6 +315,16 @@ def delete_lead(request, lead_id):
     except ContactMessage.DoesNotExist:
         pass
     return redirect('dashboard')
+
+def submit_popup(request):
+    if request.method == 'POST':
+        PopupLead.objects.create(
+            name=request.POST.get('name'),
+            phone=request.POST.get('phone'),
+            profession=request.POST.get('profession'),
+            interested_in=request.POST.get('interested_in', ''),
+        )
+    return redirect('home')
 
 def privacy_policy(request):
     return render(request,'website/privacy_policy.html')

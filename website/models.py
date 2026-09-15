@@ -37,6 +37,13 @@ class ContactMessage(models.Model):
 
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='new')
 
+class PopupLead(models.Model):
+    name = models.CharField(max_length=100)
+    phone = models.CharField(max_length=15)
+    profession = models.CharField(max_length=100)
+    interested_in = models.CharField(max_length=200, blank=True)
+    submitted_at = models.DateTimeField(auto_now_add=True)
+
 class GalleryCategory(models.Model):
     name=models.CharField(max_length=100)
     order=models.IntegerField(default=0)

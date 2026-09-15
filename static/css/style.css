@@ -34,8 +34,11 @@ main{
 }
 
 .logo img {
-    height: 70px;
-    display: block;
+    height: 45px;  
+}
+
+.logo-large img {
+    height: 75px;  
 }
 
 .nav-links {
@@ -870,6 +873,66 @@ table button:hover {
     font-size: 1.2rem;
 }
 
+.lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+}
+.lightbox img {
+    max-width: 90%;
+    max-height: 75vh;
+    border-radius: 12px;
+}
+.lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: white;
+    font-size: 2.5rem;
+    cursor: pointer;
+}
+
+
+.popup-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+}
+.popup-box {
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+    max-width: 400px;
+    width: 90%;
+}
+.popup-box label {
+    display: block;
+    margin-top: 12px;
+    margin-bottom: 4px;
+    font-weight: 500;
+    color: #1a3a5c;
+}
+.popup-box input, .popup-box select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(173,216,255,0.8);
+}
+.popup-box button {
+    margin-top: 16px;
+    width: 100%;
+}
+
 
 /* ===== Responsive (mobile) — single combined breakpoint ===== */
 @media (max-width: 768px) {
@@ -908,7 +971,7 @@ table button:hover {
         flex-wrap: wrap;
     }
 
-    .footer{
+    .footer {
         padding: 25px 20px 15px;
         margin-top: 30px;
     }
@@ -921,45 +984,45 @@ table button:hover {
         margin-bottom: 15px;
     }
 
-    .footer-col:nth-child(3){
+    .footer-col:nth-child(3) {
         grid-column: 1 / -1;
     }
-    
-    .footer-col{
+
+    .footer-col {
         margin-bottom: 10px;
     }
 
-    .footer-logo{
+    .footer-logo {
         height: 45px;
         margin-bottom: 8px;
     }
 
-    .footer-col p{
+    .footer-col p {
         margin-bottom: 5px;
         line-height: 1.4;
     }
 
-    .footer-col h4{
+    .footer-col h4 {
         margin-bottom: 8px;
     }
 
-    .footer-col ul li{
+    .footer-col ul li {
         margin-bottom: 5px;
     }
 
-    .social-links{
+    .social-links {
         gap: 10px;
         margin-top: 8px;
         justify-content: center;
     }
 
-    .social-links a{
+    .social-links a {
         width: 36px;
         height: 36px;
         font-size: 1.2rem;
     }
 
-    .footer-bottom{
+    .footer-bottom {
         padding-top: 12px;
     }
 
@@ -971,7 +1034,6 @@ table button:hover {
         grid-template-columns: 1fr;
     }
 
-    @media (max-width: 768px) {
     table {
         display: block;
         overflow-x: auto;
@@ -983,11 +1045,12 @@ table button:hover {
         padding: 8px;
         font-size: 0.85rem;
     }
-}
 
-@media (max-width: 768px) {
     .cart-section input[type="number"] {
         width: 50px;
     }
+
+    .logo-large img {
+        height: 55px;
     }
 }

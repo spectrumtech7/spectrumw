@@ -25,4 +25,5 @@ urlpatterns = [
     path('dashboard/delete-lead/<int:lead_id>/', views.delete_lead, name='delete_lead'),
     path('privacy-policy/', views.privacy_policy, name='privacy_policy'),
     path('terms-conditions/', views.terms_conditions, name='terms_conditions'),
+    path('submit-popup/', views.submit_popup, name='submit_popup'),
 ]
