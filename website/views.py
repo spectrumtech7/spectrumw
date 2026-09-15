@@ -1,4 +1,5 @@
 import csv
+import os
 import openpyxl
 from django.db.models import Q
 from django.http import HttpResponse
@@ -30,6 +31,29 @@ def team_login(request):
         else:
             return render(request, 'website/team_login.html', {'error': 'Invalid username or password'})
     return render(request, 'website/team_login.html')
+
+def staff_access(request):
+    if request.method == 'POST':
+        code = request.POST.get('code')
+
+        if code == os.getenv('STAFF_ACCESS_PASSWORD'):
+            response = redirect('home')
+            response.set_cookie(
+                'staff_no_popup',
+                'true',
+                max_age=31536000
+            )
+            return response
+
+        return render(
+            request,
+            'website/staff_access.html',
+            {'error': 'Invalid staff code'}
+        )
+
+    return render(request, 'website/staff_access.html')
+
+
 
 def team_logout(request):
     logout(request)

@@ -168,6 +168,7 @@
     <span class="lightbox-close">&times;</span>
 </div>
 
+{% if not request.COOKIES.staff_no_popup and request.resolver_match.url_name != 'staff_access' %}
 <div id="popupOverlay" class="popup-overlay">
     <div class="popup-box">
         <h3>Get in Touch</h3>
@@ -195,23 +196,22 @@
         </form>
     </div>
 </div>
+{% endif %}
 
 <script>
     const popupOverlay = document.getElementById('popupOverlay');
     const popupForm = document.getElementById('popupForm');
 
-    // Show popup only once per browser session
-    if (!sessionStorage.getItem('popupShown')) {
-        popupOverlay.style.display = 'flex';
+    if (popupOverlay && popupForm) {
+        if (!sessionStorage.getItem('popupShown')) {
+            popupOverlay.style.display = 'flex';
+        }
+
+        popupForm.addEventListener('submit', function () {
+            sessionStorage.setItem('popupShown', 'true');
+            popupOverlay.style.display = 'none';
+        });
     }
-
-    popupForm.addEventListener('submit', function () {
-        // Mark popup as completed
-        sessionStorage.setItem('popupShown', 'true');
-
-        // Hide popup immediately
-        popupOverlay.style.display = 'none';
-    });
 </script>
 
 </body>

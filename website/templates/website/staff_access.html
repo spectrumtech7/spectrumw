@@ -1,0 +1,22 @@
+{% extends "website/base.html" %}
+
+{% block title %}Staff Access | Spectrum Technologies{% endblock %}
+
+{% block content %}
+<section class="contact-section" style="max-width: 400px;">
+    <h2>Staff Access</h2>
+
+    {% if error %}
+        <p style="color: red; text-align: center;">{{ error }}</p>
+    {% endif %}
+
+    <form method="POST" class="contact-form">
+        {% csrf_token %}
+
+        <label for="code">Staff Code</label>
+        <input type="password" id="code" name="code" required>
+
+        <button type="submit" class="btn-primary">Continue</button>
+    </form>
+</section>
+{% endblock %}

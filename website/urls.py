@@ -26,4 +26,5 @@ urlpatterns = [
     path('privacy-policy/', views.privacy_policy, name='privacy_policy'),
     path('terms-conditions/', views.terms_conditions, name='terms_conditions'),
     path('submit-popup/', views.submit_popup, name='submit_popup'),
+    path('staff-access/', views.staff_access, name='staff_access'),
 ]
