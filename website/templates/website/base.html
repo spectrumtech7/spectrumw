@@ -13,23 +13,25 @@
 <body>
 
     <nav class="navbar">
-        <div class="logo" {% if request.resolver_match.url_name == 'home' %}logo-large{% endif %}>
-            <img src="{% static 'images/logo.png' %}" alt="Spectrum Technologies">
-        </div>
-        <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-        <ul class="nav-links" id="navLinks">
-            <li><a href="/">Home</a></li>
-            <li><a href="{% url 'products_list' %}">Products</a></li>
-            <li><a href="{% url 'gallery' %}">Gallery</a></li>
-            <li><a href="{% url 'about' %}">About</a></li>
-            <li><a href="{% url 'contact' %}">Contact</a></li>
-            <li><a href="{% url 'view_cart' %}"><i class="fa-solid fa-cart-shopping"></i></a></li>
-        </ul>
-    </nav>
+    <div class="{% if request.resolver_match.url_name == 'home' %}logo logo-large{% else %}logo{% endif %}">
+        <img src="{% static 'images/logo.png' %}" alt="Spectrum Technologies">
+    </div>
+
+    <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <ul class="nav-links" id="navLinks">
+        <li><a href="/">Home</a></li>
+        <li><a href="{% url 'products_list' %}">Products</a></li>
+        <li><a href="{% url 'gallery' %}">Gallery</a></li>
+        <li><a href="{% url 'about' %}">About</a></li>
+        <li><a href="{% url 'contact' %}">Contact</a></li>
+        <li><a href="{% url 'view_cart' %}"><i class="fa-solid fa-cart-shopping"></i></a></li>
+    </ul>
+</nav>
 
     <main>
         {% block content %}{% endblock %}
@@ -133,12 +135,25 @@
 <script>
     function openLightbox(src) {
         document.getElementById('lightboxImg').src = src;
-        document.getElementById('lightboxDownload').href = src;
+
+        // Force Cloudinary image to download
+        let downloadUrl = src;
+
+        if (src.includes('/image/upload/')) {
+            downloadUrl = src.replace(
+                '/image/upload/',
+                '/image/upload/fl_attachment/'
+            );
+        }
+
+        document.getElementById('lightboxDownload').href = downloadUrl;
         document.getElementById('lightbox').style.display = 'flex';
     }
+
     function closeLightbox() {
         document.getElementById('lightbox').style.display = 'none';
     }
+
     document.querySelectorAll('.gallery-media').forEach(el => {
         if (el.tagName === 'IMG') {
             el.style.cursor = 'zoom-in';
@@ -147,7 +162,7 @@
     });
 </script>
 
-    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+<div id="lightbox" class="lightbox" onclick="closeLightbox()">
     <img id="lightboxImg" src="">
     <a id="lightboxDownload" href="" download class="btn-primary" onclick="event.stopPropagation()">Download</a>
     <span class="lightbox-close">&times;</span>
@@ -182,10 +197,21 @@
 </div>
 
 <script>
+    const popupOverlay = document.getElementById('popupOverlay');
+    const popupForm = document.getElementById('popupForm');
+
+    // Show popup only once per browser session
     if (!sessionStorage.getItem('popupShown')) {
-        document.getElementById('popupOverlay').style.display = 'flex';
-        sessionStorage.setItem('popupShown', 'true');
+        popupOverlay.style.display = 'flex';
     }
+
+    popupForm.addEventListener('submit', function () {
+        // Mark popup as completed
+        sessionStorage.setItem('popupShown', 'true');
+
+        // Hide popup immediately
+        popupOverlay.style.display = 'none';
+    });
 </script>
 
 </body>
