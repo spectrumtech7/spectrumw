@@ -1,5 +1,6 @@
 import csv
 import openpyxl
+from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
@@ -37,7 +38,23 @@ def team_logout(request):
 @login_required
 def dashboard(request):
     full_name = USERNAME_TO_FULLNAME.get(request.user.username)
-    leads = ContactMessage.objects.filter(assigned_to=full_name).order_by('-submitted_at')
+
+    search_query = request.GET.get('q', '').strip()
+
+    leads = ContactMessage.objects.filter(
+        assigned_to=full_name
+    )
+
+    if search_query:
+        leads = leads.filter(
+            Q(name__icontains=search_query) |
+            Q(phone__icontains=search_query) |
+            Q(email__icontains=search_query) |
+            Q(location__icontains=search_query) |
+            Q(message__icontains=search_query)
+        )
+
+    leads = leads.order_by('-submitted_at')
 
     if request.method == 'POST':
         lead_id = request.POST.get('lead_id')
@@ -46,15 +63,23 @@ def dashboard(request):
         lead.status = new_status
         lead.save()
         return redirect('dashboard')
-    
+
     for lead in leads:
-        digits = ''.join(filter(str.isdigit,lead.phone))
+        digits = ''.join(filter(str.isdigit, lead.phone))
         if len(digits) == 10:
             lead.whatsapp_number = '91' + digits
         else:
             lead.whatsapp_number = digits
 
-    return render(request,'website/dashboard.html',{'leads':leads, 'name': full_name})
+    return render(
+        request,
+        'website/dashboard.html',
+        {
+            'leads': leads,
+            'name': full_name,
+            'search_query': search_query,
+        }
+    )
     
 
 @login_required

@@ -1050,4 +1050,16 @@ table button:hover {
         width: 50px;
     }
 
+    .gallery-jump {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 0 20px;
+    }
+
+    .gallery-jump select {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
 }
