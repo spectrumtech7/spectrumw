@@ -1,12 +1,12 @@
 from django.contrib import admin
-from .models import Product, ContactMessage, GalleryCategory, GalleryItem, BuyNowClick, ProductImage, ProductVideo, ProductSpecification, ProductCategory, PopupLead
+from .models import LeadExcelFile, Product, ContactMessage, GalleryCategory, GalleryItem, BuyNowClick, ProductImage, ProductVideo, ProductSpecification, ProductCategory, PopupLead
 
 admin.site.register(BuyNowClick)
 admin.site.register(ProductImage)
 admin.site.register(ProductVideo)
 admin.site.register(ProductSpecification)
 admin.site.register(PopupLead)
-
+admin.site.register(LeadExcelFile)
 
 class ProductImageInline(admin.TabularInline):
     model = ProductImage

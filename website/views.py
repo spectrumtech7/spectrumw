@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .models import PopupLead, Product, ContactMessage, GalleryCategory,BuyNowClick, ProductCategory
+from .models import LeadExcelFile, PopupLead, Product, ContactMessage, GalleryCategory,BuyNowClick, ProductCategory
 
 
 MARKETING_TEAM = ["Hetal Dodhi", "Komal Wagh", "Bhagyashree Sonar", "Mamta Vishwakarma"]  # replace with real names
@@ -52,8 +52,6 @@ def staff_access(request):
         )
 
     return render(request, 'website/staff_access.html')
-
-
 
 def team_logout(request):
     logout(request)
@@ -225,7 +223,6 @@ def category_products(request, category_id):
     products = category.products.all().order_by('model_number')
     return render(request, 'website/category_products.html', {'category': category, 'products': products})
 
-
 def about(request):
     return render(request, 'website/about.html')
 
@@ -331,29 +328,61 @@ def import_excel(request):
 
     if request.method == 'POST':
         excel_file = request.FILES.get('excel_file')
+
         if not excel_file:
             return redirect('dashboard')
 
-        wb = openpyxl.load_workbook(excel_file)
-        sheet = wb.active
+        LeadExcelFile.objects.create(file=excel_file)
 
-        for row in sheet.iter_rows(min_row=2, values_only=True):
-            name, phone, email, location, message = (row + (None,) * 5)[:5]
-            if not name:
-                continue
-            ContactMessage.objects.create(
-                name=str(name),
-                phone=str(phone) if phone else '',
-                email=str(email) if email else '',
-                location=str(location) if location else '',
-                message=str(message) if message else 'Imported from Excel',
-                assigned_to=full_name,
-                status='new'
-            )
+    files = LeadExcelFile.objects.order_by('-uploaded_at')
 
-        return redirect('dashboard')
+    return render(
+        request,
+        'website/import_excel.html',
+        {'name': full_name, 'files': files}
+    )
 
-    return render(request, 'website/import_excel.html', {'name': full_name})
+@login_required
+def delete_excel(request, file_id):
+    file = LeadExcelFile.objects.get(id=file_id)
+
+    if request.method == 'POST':
+        file.delete()
+
+    return redirect('import_excel')
+
+# @login_required
+# def import_excel(request):
+#     full_name = USERNAME_TO_FULLNAME.get(request.user.username)
+
+#     if request.method == 'POST':
+#         excel_file = request.FILES.get('excel_file')
+#         if not excel_file:
+#             return redirect('dashboard')
+
+#         LeadExcelFile.objects.create(file=excel_file)
+#         # excel_file.seek(0)
+
+#         # wb = openpyxl.load_workbook(excel_file)
+#         # sheet = wb.active
+
+#         # for row in sheet.iter_rows(min_row=2, values_only=True):
+#         #     name, phone, email, location, message = (row + (None,) * 5)[:5]
+#         #     if not name:
+#         #         continue
+#         #     ContactMessage.objects.create(
+#         #         name=str(name),
+#         #         phone=str(phone) if phone else '',
+#         #         email=str(email) if email else '',
+#         #         location=str(location) if location else '',
+#         #         message=str(message) if message else 'Imported from Excel',
+#         #         assigned_to=full_name,
+#         #         status='new'
+#         #     )
+
+#         return redirect('dashboard')
+
+#     return render(request, 'website/import_excel.html', {'name': full_name, 'files':files})
 
 @login_required
 def delete_lead(request, lead_id):

@@ -583,6 +583,169 @@ main{
     flex: 1 1 350px;
 }
 
+/* ===== Sidebar Toggle ===== */
+
+.sidebar-toggle {
+    position: absolute;
+    top: 20px;
+    right: -14px;
+    width: 28px;
+    height: 28px;
+    border: 1px solid rgba(173, 216, 255, 0.8);
+    border-radius: 50%;
+    background: white;
+    color: #0a4d8c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.sidebar-toggle:hover {
+    background: #f0f8ff;
+}
+
+/* ===== Team Dashboard Sidebar ===== */
+
+.team-dashboard {
+    display: flex;
+    min-height: calc(100vh - 80px);
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.team-sidebar {
+    position: relative;
+    width: 230px;
+    flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-right: 1px solid rgba(173, 216, 255, 0.5);
+    padding: 30px 15px;
+}
+
+.team-sidebar-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.team-sidebar-header h2 {
+    color: #0a4d8c;
+    font-size: 1.4rem;
+    margin-bottom: 4px;
+}
+
+.team-sidebar-header p {
+    color: #4a5568;
+    font-size: 0.8rem;
+}
+
+.team-sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.team-sidebar-nav a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #1a3a5c;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.team-sidebar-nav a i {
+    width: 20px;
+    text-align: center;
+    color: #2196f3;
+}
+
+.team-sidebar-nav a:hover,
+.team-sidebar-nav a.active {
+    background: rgba(33, 150, 243, 0.12);
+    color: #0a4d8c;
+}
+
+.team-sidebar-nav a.logout-link {
+    margin-top: 20px;
+    color: #e53935;
+}
+
+.team-sidebar-nav a.logout-link i {
+    color: #e53935;
+}
+
+.team-dashboard-content {
+    flex: 1;
+    min-width: 0;
+    padding: 50px 40px;
+    text-align: center;
+}
+
+.team-dashboard-content h2 {
+    color: #0a4d8c;
+    font-size: 2rem;
+    margin-bottom: 25px;
+}
+
+.lead-search-form {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.lead-search-form input {
+    padding: 10px;
+    border: 1px solid rgba(173, 216, 255, 0.8);
+    border-radius: 8px;
+    min-width: 280px;
+    font-family: inherit;
+    font-size: 0.95rem;
+}
+
+.lead-search-form input:focus {
+    outline: 2px solid #2196f3;
+}
+
+.lead-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.lead-table {
+    margin-top: 30px;
+    min-width: 900px;
+}
+
+.status-form {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.delete-lead {
+    color: #e53935;
+    font-size: 0.85rem;
+    margin-top: 6px;
+    display: inline-block;
+    text-decoration: none;
+}
+
+.no-leads {
+    padding: 20px;
+    text-align: center;
+}
+
 /* ===== Dashboard Table ===== */
 table {
     width: 100%;
@@ -933,6 +1096,26 @@ table button:hover {
     width: 100%;
 }
 
+.excel-upload-form button {
+    display: block;
+    margin: 15px auto 0;
+}
+
+.excel-file {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.excel-file span {
+    flex: 1;
+}
+
+.excel-file form {
+    margin: 0;
+}
+
 
 /* ===== Responsive (mobile) — single combined breakpoint ===== */
 @media (max-width: 768px) {
@@ -1060,6 +1243,53 @@ table button:hover {
         width: 100%;
         max-width: 100%;
         box-sizing: border-box;
+    }
+
+    /* Team Dashboard */
+    .team-dashboard {
+        flex-direction: column;
+    }
+
+    .team-sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid rgba(173, 216, 255, 0.5);
+        padding: 15px 10px;
+    }
+
+    .team-sidebar-header {
+        margin-bottom: 12px;
+    }
+
+    .team-sidebar-header h2 {
+        font-size: 1.2rem;
+    }
+
+    .team-sidebar-nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .team-sidebar-nav a {
+        padding: 9px 12px;
+        font-size: 0.82rem;
+    }
+
+    .team-sidebar-nav a.logout-link {
+        margin-top: 0;
+    }
+
+    .team-dashboard-content {
+        padding: 30px 15px;
+    }
+
+    .team-dashboard-content h2 {
+        font-size: 1.5rem;
+    }
+
+    .lead-search-form input {
+        min-width: 100%;
     }
 
 }

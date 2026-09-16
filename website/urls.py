@@ -27,4 +27,5 @@ urlpatterns = [
     path('terms-conditions/', views.terms_conditions, name='terms_conditions'),
     path('submit-popup/', views.submit_popup, name='submit_popup'),
     path('staff-access/', views.staff_access, name='staff_access'),
+    path('dashboard/delete-excel/<int:file_id>/', views.delete_excel, name='delete_excel'),
 ]

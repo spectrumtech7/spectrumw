@@ -1,3 +1,4 @@
+import cloudinary_storage
 from django.db import models
 
 
@@ -122,3 +123,14 @@ class ProductCategory(models.Model):
     def __str__(self):
         return self.name
 
+from cloudinary_storage.storage import RawMediaCloudinaryStorage
+
+class LeadExcelFile(models.Model):
+    file = models.FileField(
+        upload_to='lead_excel/',
+        storage=RawMediaCloudinaryStorage()
+    )
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.file.name

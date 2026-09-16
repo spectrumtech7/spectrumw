@@ -2,71 +2,94 @@
 {% block title %}My Leads | Spectrum Technologies{% endblock %}
 
 {% block content %}
-<section class="contact-section">
-    <h2>Welcome, {{ name }}</h2>
-    <div class="dashboard-actions">
-        <a href="{% url 'team_logout' %}">Log out</a>
-        <a href="{% url 'add_lead'%}" class="btn-primary">+Add Lead</a>
-        <a href="{% url 'export_leads' %}" class="btn-primary">Export Leads</a>
-        <a href="{% url 'import_excel' %}" class="btn-primary">Import Leads</a>
-    </div>
 
-    <form method="GET" style="display:flex; gap:10px; margin-top:20px; justify-content:center; flex-wrap:wrap;">
-    <input
-        type="text"
-        name="q"
-        value="{{ search_query }}"
-        placeholder="Search leads by name, phone, email..."
-        style="padding:10px; border:1px solid #ddd; border-radius:6px; min-width:280px;"
-    >
+<div class="team-dashboard">
+    <aside class="team-sidebar">
+        <button type="button" class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+        <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <nav class="team-sidebar-nav">
+            <a href="{% url 'dashboard' %}" class="active"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
+            <a href="{% url 'add_lead' %}"><i class="fa-solid fa-user-plus"></i><span>Add Lead</span></a>
+            <a href="{% url 'dashboard' %}"><i class="fa-solid fa-users"></i><span>My Leads</span></a>
+            <a href="{% url 'export_leads' %}"><i class="fa-solid fa-file-export"></i><span>Export Leads</span></a>
+            <a href="{% url 'import_excel' %}"><i class="fa-solid fa-file-import"></i><span>Import Leads</span></a>
+            <a href="{% url 'team_logout' %}" class="logout-link"><i class="fa-solid fa-right-from-bracket"></i><span>Log out</span></a>
+        </nav>
+    </aside>
+   
+    <main class="team-dashboard-content">
+        <h2>Welcome, {{ name }}</h2>
+        <form method="GET" class="lead-search-form">
+            <input type="text" name="q" value="{{ search_query }}" placeholder="Search leads by name, phone, email...">
+            <button type="submit" class="btn-primary">🔍 Search </button>
 
-    <button type="submit" class="btn-primary">🔍 Search</button>
+            {% if search_query %}
+                <a href="{% url 'dashboard' %}" class="btn-primary">Clear</a>
+            {% endif %}
+        </form>
+        <div class="lead-table-wrapper">
+            <table class="lead-table">
+                <tr>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                    <th>Location</th>
+                    <th>Message</th>
+                    <th>Status</th>
+                </tr>
+                {% for lead in leads %}
+                <tr>
+                    <td>{{ lead.name }}</td>
+                    <td>
+                        {{ lead.phone }}
+                        <a href="https://wa.me/{{ lead.whatsapp_number }}" target="_blank" class="whatsapp-btn" aria-label="WhatsApp">
+                            <i class="fa-brands fa-whatsapp"></i></a>
+                    </td>
+                    <td>{{ lead.email }}</td>
+                    <td>{{ lead.location|default:"—" }}</td>
+                    <td>{{ lead.message|default:"—" }}</td>
+                    <td>
+                        <form method="POST" class="status-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="lead_id" value="{{ lead.id }}">
+                            <select name="new_status">
+                                <option value="new" {% if lead.status == 'new' %}selected{% endif %}>New</option>
+                                <option value="contacted" {% if lead.status == 'contacted' %}selected{% endif %}>Contacted</option>
+                                <option value="closed" {% if lead.status == 'closed' %}selected{% endif %}>Closed</option>
+                            </select>
+                            <button type="submit">Update</button>
+                        </form>
+                        <a href="{% url 'delete_lead' lead.id %}" onclick="return confirm('Delete this lead permanently?');" class="delete-lead"> Delete </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="no-leads"> No leads assigned yet.</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </main>
+</div>
 
-    {% if search_query %}
-        <a href="{% url 'dashboard' %}" class="btn-primary">Clear</a>
-    {% endif %}
-    </form>
+<script>
+const sidebarToggle = document.getElementById('sidebarToggle');
+const teamSidebar = document.querySelector('.team-sidebar');
 
-    <table style="width:100%; margin-top: 30px; border-collapse: collapse;">
-        <tr style="background: rgba(33,150,243,0.1);">
-            <th style="padding:10px; text-align:center;">Name</th>
-            <th style="padding:10px; text-align:center;">Phone</th>
-            <th style="padding:10px; text-align:center;">Email</th>
-            <th style="padding:10px; text-align:center;">Location</th>
-            <th style="padding:10px; text-align:center;">Message</th>
-            <th style="padding:10px; text-align:center;">Status</th>
-        </tr>
-        {% for lead in leads %}
-        <tr style="border-bottom: 1px solid #ddd;">
-            <td style="padding:10px;">{{ lead.name }}</td>
-            <td style="padding:10px;">
-                {{ lead.phone }}
-                <a href="https://wa.me/{{ lead.whatsapp_number }}" target="_blank" class="whatsapp-btn" aria-label="WhatsApp">
-                    <i class="fa-brands fa-whatsapp"></i>
-                </a>
-            </td>
-            <td style="padding:10px;">{{ lead.email }}</td>
-            <td style="padding:10px;">{{ lead.location|default:"—" }}</td>
-            <td style="padding:10px;">{{ lead.message|default:"—" }}</td>
-            <td style="padding:10px;">
-                <form method="POST" style="display:flex; gap:6px;">
-                    {% csrf_token %}
-                    <input type="hidden" name="lead_id" value="{{ lead.id }}">
-                    <select name="new_status">
-                        <option value="new" {% if lead.status == 'new' %}selected{% endif %}>New</option>
-                        <option value="contacted" {% if lead.status == 'contacted' %}selected{% endif %}>Contacted</option>
-                        <option value="closed" {% if lead.status == 'closed' %}selected{% endif %}>Closed</option>
-                    </select>
-                    <button type="submit">Update</button>
-                </form>
-                <a href = "{% url 'delete_lead' lead.id %}" onclick="return confirm('Delete this lead permanently?');" style="color:#e53935; font-size:0.85rem; margin-top:6px; display: inline-block;">
-                    Delete
-                </a>
-            </td>
-        </tr>
-        {% empty %}
-        <tr><td colspan="6" style="padding:20px; text-align:center;">No leads assigned yet.</td></tr>
-        {% endfor %}
-    </table>
-</section>
+sidebarToggle.onclick = function() {
+    if (teamSidebar.style.width === '72px') {
+        teamSidebar.style.width = '230px';
+        teamSidebar.querySelectorAll('span').forEach(span => span.style.display = '');
+        teamSidebar.querySelector('.team-sidebar-header h2').style.display = '';
+        teamSidebar.querySelector('.team-sidebar-header p').style.display = '';
+    } else {
+        teamSidebar.style.width = '72px';
+        teamSidebar.querySelectorAll('span').forEach(span => span.style.display = 'none');
+        teamSidebar.querySelector('.team-sidebar-header h2').style.display = 'none';
+        teamSidebar.querySelector('.team-sidebar-header p').style.display = 'none';
+    }
+};
+</script>
+
 {% endblock %}
