@@ -147,29 +147,76 @@ def home(request):
 
 def contact(request):
     if request.method == 'POST':
-        name = request.POST.get('name')
-        phone = request.POST.get('phone')
-        email = request.POST.get('email')
-        message = request.POST.get('message')
-        location = request.POST.get('location')
+        name = request.POST.get('name', '').strip()
+        phone = request.POST.get('phone', '').strip()
+        email = request.POST.get('email', '').strip()
+        message = request.POST.get('message', '').strip()
+        location = request.POST.get('location', '').strip()
+
+        if not name.replace(' ', '').isalpha():
+            return render(request, 'website/contact.html', {
+                'error': 'Name should contain letters and spaces only.'
+            })
+
+        if not phone.isdigit() or len(phone) != 10:
+            return render(request, 'website/contact.html', {
+                'error': 'Enter a valid 10-digit phone number.'
+            })
+
+        if len(location) > 255:
+            return render(request, 'website/contact.html', {
+                'error': 'Location is too long.'
+            })
 
         total_so_far = ContactMessage.objects.count()
         assigned_person = MARKETING_TEAM[total_so_far % len(MARKETING_TEAM)]
 
         ContactMessage.objects.create(
-            name=name, phone=phone, email=email,
-            message=message, location=location, assigned_to=assigned_person
+            name=name,
+            phone=phone,
+            email=email,
+            message=message,
+            location=location,
+            assigned_to=assigned_person
         )
 
         number = MARKETING_WHATSAPP.get(assigned_person)
         whatsapp_message = f"Hi, I'm {name} from {location or 'unknown location'}, I submitted an inquiry: {message or 'General inquiry'}"
         whatsapp_url = f"https://wa.me/{number}?text={whatsapp_message}"
 
-        # Email notification goes here once app password is ready
-        return render(request,'website/contact_success.html', {'whatsapp_url': whatsapp_url})
-        # return redirect('contact_success')
+        return render(
+            request,
+            'website/contact_success.html',
+            {'whatsapp_url': whatsapp_url}
+        )
 
     return render(request, 'website/contact.html')
+
+# def contact(request):
+#     if request.method == 'POST':
+#         name = request.POST.get('name')
+#         phone = request.POST.get('phone')
+#         email = request.POST.get('email')
+#         message = request.POST.get('message')
+#         location = request.POST.get('location')
+
+#         total_so_far = ContactMessage.objects.count()
+#         assigned_person = MARKETING_TEAM[total_so_far % len(MARKETING_TEAM)]
+
+#         ContactMessage.objects.create(
+#             name=name, phone=phone, email=email,
+#             message=message, location=location, assigned_to=assigned_person
+#         )
+
+#         number = MARKETING_WHATSAPP.get(assigned_person)
+#         whatsapp_message = f"Hi, I'm {name} from {location or 'unknown location'}, I submitted an inquiry: {message or 'General inquiry'}"
+#         whatsapp_url = f"https://wa.me/{number}?text={whatsapp_message}"
+
+#         # Email notification goes here once app password is ready
+#         return render(request,'website/contact_success.html', {'whatsapp_url': whatsapp_url})
+#         # return redirect('contact_success')
+
+#     return render(request, 'website/contact.html')
 
 def contact_success(request):
     return render(request, 'website/contact_success.html')
@@ -266,25 +313,48 @@ def remove_from_cart(request, product_id):
     request.session['cart'] = cart
     return redirect('view_cart')
 
+# def update_cart_quantity(request, product_id):
+#     if request.method == 'POST':
+#         try:
+#             quantity = int(request.POST.get('quantity', 1))
+#         except (ValueError, TypeError):
+#             quantity = 1
+
+#         cart = request.session.get('cart', {})
+
+#         if 1 <= quantity <= 3000:
+#             cart[str(product_id)] = quantity
+#         elif quantity > 3000:
+#             cart[str(product_id)] = 3000
+#         else:
+#             cart.pop(str(product_id), None)
+
+#         request.session['cart'] = cart
+
+#     return redirect('view_cart')
+
 def update_cart_quantity(request, product_id):
     if request.method == 'POST':
+        cart = request.session.get('cart', {})
+
         try:
             quantity = int(request.POST.get('quantity', 1))
         except (ValueError, TypeError):
             quantity = 1
 
-        cart = request.session.get('cart', {})
+        if quantity > 3000:
+            quantity = 3000
 
-        if 1 <= quantity <= 3000:
+        if quantity >= 1:
             cart[str(product_id)] = quantity
-        elif quantity > 3000:
-            cart[str(product_id)] = 3000
         else:
             cart.pop(str(product_id), None)
 
         request.session['cart'] = cart
+        request.session.modified = True
 
     return redirect('view_cart')
+
 # def update_cart_quantity(request, product_id):
 #     if request.method == 'POST':
 #         quantity = int(request.POST.get('quantity', 1))
@@ -396,13 +466,34 @@ def delete_lead(request, lead_id):
 
 def submit_popup(request):
     if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        phone = request.POST.get('phone', '').strip()
+        profession = request.POST.get('profession', '').strip()
+        interested_in = request.POST.get('interested_in', '').strip()
+
+        if not name.replace(' ', '').isalpha():
+            return redirect('home')
+
+        if not phone.isdigit() or len(phone) != 10:
+            return redirect('home')
+
         PopupLead.objects.create(
-            name=request.POST.get('name'),
-            phone=request.POST.get('phone'),
-            profession=request.POST.get('profession'),
-            interested_in=request.POST.get('interested_in', ''),
+            name=name,
+            phone=phone,
+            profession=profession,
+            interested_in=interested_in,
         )
+
     return redirect('home')
+# def submit_popup(request):
+#     if request.method == 'POST':
+#         PopupLead.objects.create(
+#             name=request.POST.get('name'),
+#             phone=request.POST.get('phone'),
+#             # profession=request.POST.get('profession'),
+#             interested_in=request.POST.get('interested_in', ''),
+#         )
+#     return redirect('home')
 
 def privacy_policy(request):
     return render(request,'website/privacy_policy.html')

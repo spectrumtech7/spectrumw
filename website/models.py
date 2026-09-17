@@ -32,7 +32,7 @@ class ContactMessage(models.Model):
     phone = models.CharField(max_length=15)
     email = models.EmailField()
     message = models.TextField(blank=True)
-    location = models.CharField(max_length=100, blank=True)
+    location = models.CharField(max_length=255, blank=True)
     assigned_to = models.CharField(max_length=100, blank=True)
     submitted_at = models.DateTimeField(auto_now_add=True)
 

@@ -29,7 +29,12 @@
         <li><a href="{% url 'gallery' %}">Gallery</a></li>
         <li><a href="{% url 'about' %}">About</a></li>
         <li><a href="{% url 'contact' %}">Contact</a></li>
-        <li><a href="{% url 'view_cart' %}"><i class="fa-solid fa-cart-shopping"></i></a></li>
+        <li><a href="{% url 'view_cart' %}" class="cart-link"><i class="fa-solid fa-cart-shopping"></i>
+        {% if cart_item_count > 0 %}
+            <span class="cart-badge">{{ cart_item_count }}</span>
+        {% endif %}
+    </a>
+</li>
     </ul>
 </nav>
 
@@ -178,7 +183,7 @@
             <input type="text" name="name" required>
 
             <label>Contact Number *</label>
-            <input type="tel" name="phone" maxlength="15" required>
+            <input type="tel" name="phone" maxlength="10" required>
 
             <label>Profession *</label>
             <select name="profession" required>
