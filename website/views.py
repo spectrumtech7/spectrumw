@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .models import LeadExcelFile, PopupLead, Product, ContactMessage, GalleryCategory,BuyNowClick, ProductCategory
+from .models import Cart, CartItem, LeadExcelFile, PopupLead, Product, ContactMessage, GalleryCategory,BuyNowClick, ProductCategory
 
 
 MARKETING_TEAM = ["Hetal Dodhi", "Komal Wagh", "Bhagyashree Sonar", "Mamta Vishwakarma"]  # replace with real names
@@ -273,122 +273,230 @@ def category_products(request, category_id):
 def about(request):
     return render(request, 'website/about.html')
 
+
 def add_to_cart(request, product_id):
-    cart = request.session.get('cart', {})
-    product_id_str = str(product_id)
+    cart_id = request.COOKIES.get('cart_id')
 
-    current_quantity = cart.get(product_id_str, 0)
+    if cart_id:
+        try:
+            cart = Cart.objects.get(cart_id=cart_id)
+        except Cart.DoesNotExist:
+            cart = Cart.objects.create()
+    else:
+        cart = Cart.objects.create()
 
-    if current_quantity < 3000:
-        cart[product_id_str] = current_quantity + 1
+    item, created = CartItem.objects.get_or_create(
+        cart=cart,
+        product_id=product_id
+    )
 
-    request.session['cart'] = cart
-    return redirect('view_cart')
+    if created:
+        item.quantity = 1
+    elif item.quantity < 3000:
+        item.quantity += 1
+
+    item.save()
+
+    response = redirect('view_cart')
+    response.set_cookie(
+        'cart_id',
+        str(cart.cart_id),
+        max_age=60 * 60 * 24 * 365
+    )
+
+    return response
 # def add_to_cart(request, product_id):
 #     cart = request.session.get('cart', {})
 #     product_id_str = str(product_id)
-#     cart[product_id_str] = cart.get(product_id_str, 0) + 1
+
+#     current_quantity = cart.get(product_id_str, 0)
+
+#     if current_quantity < 3000:
+#         cart[product_id_str] = current_quantity + 1
+
 #     request.session['cart'] = cart
 #     return redirect('view_cart')
 
 def view_cart(request):
-    cart = request.session.get('cart', {})
+    cart_id = request.COOKIES.get('cart_id')
     cart_items = []
     total = 0
 
-    for product_id, quantity in cart.items():
+    if cart_id:
         try:
-            product = Product.objects.get(id=product_id)
-            subtotal = product.price * quantity
-            total += subtotal
-            cart_items.append({'product': product, 'quantity': quantity, 'subtotal': subtotal})
-        except Product.DoesNotExist:
-            continue
+            cart = Cart.objects.get(cart_id=cart_id)
 
-    return render(request, 'website/cart.html', {'cart_items': cart_items, 'total': total})
+            for item in cart.items.select_related('product'):
+                subtotal = item.product.price * item.quantity
+                total += subtotal
+
+                cart_items.append({
+                    'product': item.product,
+                    'quantity': item.quantity,
+                    'subtotal': subtotal
+                })
+
+        except Cart.DoesNotExist:
+            pass
+
+    return render(
+        request,
+        'website/cart.html',
+        {
+            'cart_items': cart_items,
+            'total': total
+        }
+    )
+
+# def view_cart(request):
+#     cart = request.session.get('cart', {})
+#     cart_items = []
+#     total = 0
+
+#     for product_id, quantity in cart.items():
+#         try:
+#             product = Product.objects.get(id=product_id)
+#             subtotal = product.price * quantity
+#             total += subtotal
+#             cart_items.append({'product': product, 'quantity': quantity, 'subtotal': subtotal})
+#         except Product.DoesNotExist:
+#             continue
+
+#     return render(request, 'website/cart.html', {'cart_items': cart_items, 'total': total})
 
 def remove_from_cart(request, product_id):
-    cart = request.session.get('cart', {})
-    cart.pop(str(product_id), None)
-    request.session['cart'] = cart
+    cart_id = request.COOKIES.get('cart_id')
+
+    if cart_id:
+        try:
+            cart = Cart.objects.get(cart_id=cart_id)
+            CartItem.objects.filter(
+                cart=cart,
+                product_id=product_id
+            ).delete()
+        except Cart.DoesNotExist:
+            pass
+
     return redirect('view_cart')
+# def remove_from_cart(request, product_id):
+#     cart = request.session.get('cart', {})
+#     cart.pop(str(product_id), None)
+#     request.session['cart'] = cart
+#     return redirect('view_cart')
+
+
 
 # def update_cart_quantity(request, product_id):
 #     if request.method == 'POST':
+#         cart = request.session.get('cart', {})
+
 #         try:
 #             quantity = int(request.POST.get('quantity', 1))
 #         except (ValueError, TypeError):
 #             quantity = 1
 
-#         cart = request.session.get('cart', {})
+#         if quantity > 3000:
+#             quantity = 3000
 
-#         if 1 <= quantity <= 3000:
+#         if quantity >= 1:
 #             cart[str(product_id)] = quantity
-#         elif quantity > 3000:
-#             cart[str(product_id)] = 3000
 #         else:
 #             cart.pop(str(product_id), None)
 
 #         request.session['cart'] = cart
+#         request.session.modified = True
 
 #     return redirect('view_cart')
 
 def update_cart_quantity(request, product_id):
     if request.method == 'POST':
-        cart = request.session.get('cart', {})
+        cart_id = request.COOKIES.get('cart_id')
 
-        try:
-            quantity = int(request.POST.get('quantity', 1))
-        except (ValueError, TypeError):
-            quantity = 1
+        if cart_id:
+            try:
+                cart = Cart.objects.get(cart_id=cart_id)
+                item = CartItem.objects.get(
+                    cart=cart,
+                    product_id=product_id
+                )
 
-        if quantity > 3000:
-            quantity = 3000
+                quantity = int(request.POST.get('quantity', 1))
 
-        if quantity >= 1:
-            cart[str(product_id)] = quantity
-        else:
-            cart.pop(str(product_id), None)
+                if quantity > 3000:
+                    quantity = 3000
 
-        request.session['cart'] = cart
-        request.session.modified = True
+                if quantity >= 1:
+                    item.quantity = quantity
+                    item.save()
+                else:
+                    item.delete()
+
+            except (Cart.DoesNotExist, CartItem.DoesNotExist, ValueError):
+                pass
 
     return redirect('view_cart')
 
-# def update_cart_quantity(request, product_id):
-#     if request.method == 'POST':
-#         quantity = int(request.POST.get('quantity', 1))
-#         cart = request.session.get('cart', {})
-#         if quantity > 0:
-#             cart[str(product_id)] = quantity
-#         else:
-#             cart.pop(str(product_id), None)
-#         request.session['cart'] = cart
-#     return redirect('view_cart')
-
 def checkout_cart(request):
-    cart = request.session.get('cart', {})
-    if not cart:
+    cart_id = request.COOKIES.get('cart_id')
+
+    if not cart_id:
+        return redirect('view_cart')
+
+    try:
+        cart = Cart.objects.get(cart_id=cart_id)
+    except Cart.DoesNotExist:
+        return redirect('view_cart')
+
+    items = cart.items.select_related('product')
+
+    if not items.exists():
         return redirect('view_cart')
 
     total_so_far = BuyNowClick.objects.count()
     assigned_person = MARKETING_TEAM[total_so_far % len(MARKETING_TEAM)]
 
     lines = []
-    for product_id, quantity in cart.items():
-        try:
-            product = Product.objects.get(id=product_id)
-            lines.append(f"{product.name} x{quantity}")
-            BuyNowClick.objects.create(product=product, assigned_to=assigned_person)
-        except Product.DoesNotExist:
-            continue
+
+    for item in items:
+        lines.append(f"{item.product.name} x{item.quantity}")
+
+        BuyNowClick.objects.create(
+            product=item.product,
+            assigned_to=assigned_person
+        )
 
     message = "Hi, I'm interested in ordering:\n" + "\n".join(lines)
+
     number = MARKETING_WHATSAPP.get(assigned_person)
     whatsapp_url = f"https://wa.me/{number}?text={message}"
 
-    request.session['cart'] = {}
+    cart.delete()
+
     return redirect(whatsapp_url)
+
+# def checkout_cart(request):
+#     cart = request.session.get('cart', {})
+#     if not cart:
+#         return redirect('view_cart')
+
+#     total_so_far = BuyNowClick.objects.count()
+#     assigned_person = MARKETING_TEAM[total_so_far % len(MARKETING_TEAM)]
+
+#     lines = []
+#     for product_id, quantity in cart.items():
+#         try:
+#             product = Product.objects.get(id=product_id)
+#             lines.append(f"{product.name} x{quantity}")
+#             BuyNowClick.objects.create(product=product, assigned_to=assigned_person)
+#         except Product.DoesNotExist:
+#             continue
+
+#     message = "Hi, I'm interested in ordering:\n" + "\n".join(lines)
+#     number = MARKETING_WHATSAPP.get(assigned_person)
+#     whatsapp_url = f"https://wa.me/{number}?text={message}"
+
+#     request.session['cart'] = {}
+#     return redirect(whatsapp_url)
 
 import openpyxl
 
@@ -464,6 +572,7 @@ def delete_lead(request, lead_id):
         pass
     return redirect('dashboard')
 
+
 def submit_popup(request):
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
@@ -477,23 +586,45 @@ def submit_popup(request):
         if not phone.isdigit() or len(phone) != 10:
             return redirect('home')
 
-        PopupLead.objects.create(
-            name=name,
-            phone=phone,
-            profession=profession,
-            interested_in=interested_in,
+        if not PopupLead.objects.filter(phone=phone).exists():
+            PopupLead.objects.create(
+                name=name,
+                phone=phone,
+                profession=profession,
+                interested_in=interested_in,
+            )
+
+        response = redirect('home')
+        response.set_cookie(
+            'popup_submitted',
+            'true',
+            max_age=60 * 60 * 24 * 365
         )
+        return response
 
     return redirect('home')
 # def submit_popup(request):
 #     if request.method == 'POST':
+#         name = request.POST.get('name', '').strip()
+#         phone = request.POST.get('phone', '').strip()
+#         profession = request.POST.get('profession', '').strip()
+#         interested_in = request.POST.get('interested_in', '').strip()
+
+#         if not name.replace(' ', '').isalpha():
+#             return redirect('home')
+
+#         if not phone.isdigit() or len(phone) != 10:
+#             return redirect('home')
+
 #         PopupLead.objects.create(
-#             name=request.POST.get('name'),
-#             phone=request.POST.get('phone'),
-#             # profession=request.POST.get('profession'),
-#             interested_in=request.POST.get('interested_in', ''),
+#             name=name,
+#             phone=phone,
+#             profession=profession,
+#             interested_in=interested_in,
 #         )
+
 #     return redirect('home')
+
 
 def privacy_policy(request):
     return render(request,'website/privacy_policy.html')

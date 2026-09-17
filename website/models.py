@@ -1,3 +1,4 @@
+import uuid
 import cloudinary_storage
 from django.db import models
 
@@ -26,6 +27,22 @@ class Product(models.Model):
         if cross_image:
             return cross_image.image.url
         return self.image.url
+
+class Cart(models.Model):
+    cart_id = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.cart_id)
+
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='items')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.product.name} x {self.quantity}"
     
 class ContactMessage(models.Model):
     name = models.CharField(max_length=100)

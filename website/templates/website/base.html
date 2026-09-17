@@ -173,7 +173,7 @@
     <span class="lightbox-close">&times;</span>
 </div>
 
-{% if not request.COOKIES.staff_no_popup and request.resolver_match.url_name != 'staff_access' %}
+{% if not request.COOKIES.staff_no_popup and not request.COOKIES.popup_submitted and request.resolver_match.url_name != 'staff_access' %}
 <div id="popupOverlay" class="popup-overlay">
     <div class="popup-box">
         <h3>Get in Touch</h3>
