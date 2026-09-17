@@ -180,10 +180,10 @@
         <form method="POST" action="{% url 'submit_popup' %}" id="popupForm">
             {% csrf_token %}
             <label>Name *</label>
-            <input type="text" name="name" required>
+            <input type="text" name="name" pattern = "[A-Za-z\s]+" title="Name should contain only letters and spaces" required>
 
             <label>Contact Number *</label>
-            <input type="tel" name="phone" maxlength="10" required>
+            <input type="tel" name="phone" inputmode = "numeric" pattern="[0-9]{10}$" title="Please enter a valid 10-digit phone number" required>
 
             <label>Profession *</label>
             <select name="profession" required>
