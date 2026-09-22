@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .models import Cart, CartItem, LeadExcelFile, PopupLead, Product, ContactMessage, GalleryCategory,BuyNowClick, ProductCategory
+from .models import Cart, CartItem, LeadExcelFile, PopupLead, WhatsAppLead, Product, ContactMessage, GalleryCategory,BuyNowClick, ProductCategory
 
 
 MARKETING_TEAM = ["Hetal Dodhi", "Komal Wagh", "Bhagyashree Sonar", "Mamta Vishwakarma"]  # replace with real names
@@ -102,8 +102,8 @@ def dashboard(request):
             'search_query': search_query,
         }
     )
-    
 
+    
 @login_required
 def add_lead(request):
     full_name = USERNAME_TO_FULLNAME.get(request.user.username)
@@ -113,17 +113,70 @@ def add_lead(request):
         phone = request.POST.get('phone')
         location = request.POST.get('location')
 
-        ContactMessage.objects.create(
+        WhatsAppLead.objects.create(
             name=name,
             phone=phone,
             location=location,
-            email="",
-            message='Added manually(WhatsApp inquiry)',
-            assigned_to=full_name,
-            status='new'
+            added_by=full_name
         )
-        return redirect('dashboard')
-    return render(request, 'website/add_lead.html',{'name':full_name})
+
+        return redirect('whatsapp_leads')
+
+    return render(
+        request,
+        'website/add_lead.html',
+        {'name': full_name}
+    )
+
+@login_required
+def whatsapp_leads(request):
+    full_name = USERNAME_TO_FULLNAME.get(request.user.username)
+
+    leads = WhatsAppLead.objects.filter(
+        added_by=full_name
+    ).order_by('-added_at')
+
+    if request.method == 'POST':
+        lead_id = request.POST.get('lead_id')
+        new_status = request.POST.get('new_status')
+
+        lead = WhatsAppLead.objects.get(
+            id=lead_id,
+            added_by=full_name
+        )
+
+        lead.status = new_status
+        lead.save()
+
+        return redirect('whatsapp_leads')
+
+    for lead in leads:
+        digits = ''.join(filter(str.isdigit, lead.phone))
+
+        if len(digits) == 10:
+            lead.whatsapp_number = '91' + digits
+        else:
+            lead.whatsapp_number = digits
+
+    return render(
+        request,
+        'website/whatsapp_leads.html',
+        {
+            'leads': leads,
+            'name': full_name,
+        }
+    )
+
+@login_required
+def delete_whatsapp_lead(request, lead_id):
+    full_name = USERNAME_TO_FULLNAME.get(request.user.username)
+
+    WhatsAppLead.objects.filter(
+        id=lead_id,
+        added_by=full_name
+    ).delete()
+
+    return redirect('whatsapp_leads')
     
 @login_required
 def export_leads(request):

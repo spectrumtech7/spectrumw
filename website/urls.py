@@ -9,6 +9,8 @@ urlpatterns = [
     path('team-logout/', views.team_logout, name='team_logout'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('dashboard/add-lead/', views.add_lead, name='add_lead'),
+    path('dashboard/whatsapp-leads/', views.whatsapp_leads, name='whatsapp_leads'),
+    path('dashboard/whatsapp-leads/delete/<int:lead_id>/', views.delete_whatsapp_lead, name='delete_whatsapp_lead'),
     path('dashboard/export/',views.export_leads, name='export_leads'),
     path('gallery/', views.gallery, name='gallery'),
     path('buy-now/<int:product_id>/',views.buy_now, name='buy_now'),
@@ -28,4 +30,5 @@ urlpatterns = [
     path('submit-popup/', views.submit_popup, name='submit_popup'),
     path('staff-access/', views.staff_access, name='staff_access'),
     path('dashboard/delete-excel/<int:file_id>/', views.delete_excel, name='delete_excel'),
+   
 ]

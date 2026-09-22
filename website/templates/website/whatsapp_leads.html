@@ -1,75 +1,108 @@
 {% extends "website/base.html" %}
-{% block title %}My Leads | Spectrum Technologies{% endblock %}
+{% block title %}WhatsApp Leads | Spectrum Technologies{% endblock %}
 
 {% block content %}
 
 <div class="team-dashboard">
     <aside class="team-sidebar">
         <button type="button" class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
-        <i class="fa-solid fa-chevron-left"></i>
+            <i class="fa-solid fa-chevron-left"></i>
         </button>
+
         <nav class="team-sidebar-nav">
-            <a href="{% url 'dashboard' %}" class="active"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
-            <a href="{% url 'whatsapp_leads' %}"><i class="fa-solid fa-user-plus"></i><span>WhatsApp Leads</span></a>
-            <a href="{% url 'dashboard' %}"><i class="fa-solid fa-users"></i><span>My Leads</span></a>
-            <a href="{% url 'export_leads' %}"><i class="fa-solid fa-file-export"></i><span>Export Leads</span></a>
-            <a href="{% url 'import_excel' %}"><i class="fa-solid fa-file-import"></i><span>Import Leads</span></a>
-            <a href="{% url 'team_logout' %}" class="logout-link"><i class="fa-solid fa-right-from-bracket"></i><span>Log out</span></a>
+            <a href="{% url 'dashboard' %}">
+                <i class="fa-solid fa-house"></i><span>Dashboard</span>
+            </a>
+
+            <a href="{% url 'whatsapp_leads' %}" class="active">
+                <i class="fa-solid fa-user-plus"></i><span>WhatsApp Leads</span>
+            </a>
+
+            <a href="{% url 'dashboard' %}">
+                <i class="fa-solid fa-users"></i><span>My Leads</span>
+            </a>
+
+            <a href="{% url 'export_leads' %}">
+                <i class="fa-solid fa-file-export"></i><span>Export Leads</span>
+            </a>
+
+            <a href="{% url 'import_excel' %}">
+                <i class="fa-solid fa-file-import"></i><span>Import Leads</span>
+            </a>
+
+            <a href="{% url 'team_logout' %}" class="logout-link">
+                <i class="fa-solid fa-right-from-bracket"></i><span>Log out</span>
+            </a>
         </nav>
     </aside>
-   
-    <main class="team-dashboard-content">
-        <h2>Welcome, {{ name }}</h2>
-        <form method="GET" class="lead-search-form">
-            <input type="text" name="q" value="{{ search_query }}" placeholder="Search leads by name, phone, email...">
-            <button type="submit" class="btn-primary">🔍 Search </button>
 
-            {% if search_query %}
-                <a href="{% url 'dashboard' %}" class="btn-primary">Clear</a>
-            {% endif %}
-        </form>
+    <main class="team-dashboard-content">
+
+        <h2>WhatsApp Leads</h2>
+
+        <div style="margin-bottom: 20px;">
+            <a href="{% url 'add_lead' %}" class="btn-primary">+ Add Lead</a>
+        </div>
+
         <div class="lead-table-wrapper">
             <table class="lead-table">
+
                 <tr>
                     <th>Name</th>
                     <th>Phone</th>
-                    <th>Email</th>
                     <th>Location</th>
-                    <th>Message</th>
                     <th>Status</th>
                 </tr>
+
                 {% for lead in leads %}
                 <tr>
                     <td>{{ lead.name }}</td>
+
                     <td>
                         {{ lead.phone }}
-                        <a href="https://wa.me/{{ lead.whatsapp_number }}" target="_blank" class="whatsapp-btn" aria-label="WhatsApp">
-                            <i class="fa-brands fa-whatsapp"></i></a>
+                        <a href="https://wa.me/{{ lead.whatsapp_number }}"
+                           target="_blank"
+                           class="whatsapp-btn"
+                           aria-label="WhatsApp">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </a>
                     </td>
-                    <td>{{ lead.email }}</td>
+
                     <td>{{ lead.location|default:"—" }}</td>
-                    <td>{{ lead.message|default:"—" }}</td>
+
                     <td>
                         <form method="POST" class="status-form">
                             {% csrf_token %}
                             <input type="hidden" name="lead_id" value="{{ lead.id }}">
+
                             <select name="new_status">
                                 <option value="new" {% if lead.status == 'new' %}selected{% endif %}>New</option>
                                 <option value="contacted" {% if lead.status == 'contacted' %}selected{% endif %}>Contacted</option>
                                 <option value="closed" {% if lead.status == 'closed' %}selected{% endif %}>Closed</option>
                             </select>
+
                             <button type="submit">Update</button>
                         </form>
-                        <a href="{% url 'delete_lead' lead.id %}" onclick="return confirm('Delete this lead permanently?');" class="delete-lead"> Delete </a>
+
+                        <a href="{% url 'delete_whatsapp_lead' lead.id %}"
+                           onclick="return confirm('Delete this lead permanently?');"
+                           class="delete-lead">
+                            Delete
+                        </a>
                     </td>
                 </tr>
+
                 {% empty %}
                 <tr>
-                    <td colspan="6" class="no-leads"> No leads assigned yet.</td>
+                    <td colspan="4" class="no-leads">
+                        No WhatsApp leads added yet.
+                    </td>
                 </tr>
                 {% endfor %}
+
             </table>
         </div>
+
     </main>
 </div>
 
@@ -81,13 +114,9 @@ sidebarToggle.onclick = function() {
     if (teamSidebar.style.width === '72px') {
         teamSidebar.style.width = '230px';
         teamSidebar.querySelectorAll('span').forEach(span => span.style.display = '');
-        teamSidebar.querySelector('.team-sidebar-header h2').style.display = '';
-        teamSidebar.querySelector('.team-sidebar-header p').style.display = '';
     } else {
         teamSidebar.style.width = '72px';
         teamSidebar.querySelectorAll('span').forEach(span => span.style.display = 'none');
-        teamSidebar.querySelector('.team-sidebar-header h2').style.display = 'none';
-        teamSidebar.querySelector('.team-sidebar-header p').style.display = 'none';
     }
 };
 </script>

@@ -55,6 +55,17 @@ class ContactMessage(models.Model):
 
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='new')
 
+class WhatsAppLead(models.Model):
+    name = models.CharField(max_length=100)
+    phone = models.CharField(max_length=15)
+    location = models.CharField(max_length=255, blank=True)
+    status = models.CharField(max_length=20, default='new')
+    added_by = models.CharField(max_length=100, blank=True)
+    added_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.name} - {self.phone}"
+
 class PopupLead(models.Model):
     name = models.CharField(max_length=100)
     phone = models.CharField(max_length=15)
