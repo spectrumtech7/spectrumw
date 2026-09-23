@@ -81,13 +81,26 @@ def dashboard(request):
     if request.method == 'POST':
         lead_id = request.POST.get('lead_id')
         new_status = request.POST.get('new_status')
-        lead = ContactMessage.objects.get(id=lead_id)
-        lead.status = new_status
+        location = request.POST.get('location')
+
+        lead = ContactMessage.objects.get(
+            id=lead_id,
+            assigned_to=full_name
+        )
+
+        if new_status:
+            lead.status = new_status
+
+        if location is not None:
+            lead.location = location.strip()
+
         lead.save()
+
         return redirect('dashboard')
 
     for lead in leads:
         digits = ''.join(filter(str.isdigit, lead.phone))
+
         if len(digits) == 10:
             lead.whatsapp_number = '91' + digits
         else:
@@ -139,13 +152,19 @@ def whatsapp_leads(request):
     if request.method == 'POST':
         lead_id = request.POST.get('lead_id')
         new_status = request.POST.get('new_status')
+        location = request.POST.get('location')
 
         lead = WhatsAppLead.objects.get(
-            id=lead_id,
-            added_by=full_name
-        )
+        id=lead_id,
+        added_by=full_name
+    )
 
-        lead.status = new_status
+        if new_status:
+            lead.status = new_status
+
+        if location is not None:
+            lead.location = location.strip()
+
         lead.save()
 
         return redirect('whatsapp_leads')
@@ -177,6 +196,88 @@ def delete_whatsapp_lead(request, lead_id):
     ).delete()
 
     return redirect('whatsapp_leads')
+
+@login_required
+def edit_lead_location(request, lead_id):
+    full_name = USERNAME_TO_FULLNAME.get(request.user.username)
+
+    lead = ContactMessage.objects.get(
+        id=lead_id,
+        assigned_to=full_name
+    )
+
+    if request.method == 'POST':
+        lead.location = request.POST.get('location', '').strip()
+        lead.save()
+        return redirect('dashboard')
+
+    return render(
+        request,
+        'website/edit_lead_location.html',
+        {
+            'lead': lead,
+            'name': full_name,
+        }
+    )
+
+@login_required
+def edit_whatsapp_lead_location(request, lead_id):
+    full_name = USERNAME_TO_FULLNAME.get(request.user.username)
+
+    lead = WhatsAppLead.objects.get(
+        id=lead_id,
+        added_by=full_name
+    )
+
+    if request.method == 'POST':
+        lead.location = request.POST.get('location', '').strip()
+        lead.save()
+        return redirect('whatsapp_leads')
+
+    return render(
+        request,
+        'website/edit_whatsapp_lead_location.html',
+        {
+            'lead': lead,
+            'name': full_name,
+        }
+    )
+
+@login_required
+def export_whatsapp_leads(request):
+    full_name = USERNAME_TO_FULLNAME.get(request.user.username)
+
+    leads = WhatsAppLead.objects.filter(
+        added_by=full_name
+    ).order_by('-added_at')
+
+    response = HttpResponse(
+        content_type='text/csv'
+    )
+    response['Content-Disposition'] = 'attachment; filename="whatsapp_leads.csv"'
+
+    writer = csv.writer(response)
+
+    writer.writerow([
+        'Name',
+        'Phone',
+        'Location',
+        'Status',
+        'Added By',
+        'Added Date'
+    ])
+
+    for lead in leads:
+        writer.writerow([
+            lead.name,
+            lead.phone,
+            lead.location,
+            lead.status,
+            lead.added_by,
+            lead.added_at.strftime('%Y-%m-%d %H:%M')
+        ])
+
+    return response
     
 @login_required
 def export_leads(request):

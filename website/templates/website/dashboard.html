@@ -47,7 +47,11 @@
                             <i class="fa-brands fa-whatsapp"></i></a>
                     </td>
                     <td>{{ lead.email }}</td>
-                    <td>{{ lead.location|default:"—" }}</td>
+                    <td>
+        <form method="POST" style="display:flex; gap:5px; align-items:center;">{% csrf_token %}
+            <input type="hidden" name="lead_id" value="{{ lead.id }}">
+            <input type="text" name="location" value="{{ lead.location }}" placeholder="Location" style="max-width:140px;"><button type="submit">Save</button>
+        </form></td>
                     <td>{{ lead.message|default:"—" }}</td>
                     <td>
                         <form method="POST" class="status-form">

@@ -42,6 +42,12 @@
 
         <div style="margin-bottom: 20px;">
             <a href="{% url 'add_lead' %}" class="btn-primary">+ Add Lead</a>
+            <td>
+    <form method="POST" style="display:flex; gap:5px; align-items:center;">
+        {% csrf_token %}
+        <input type="hidden" name="lead_id" value="{{ lead.id }}">
+        <input type="text" name="location" value="{{ lead.location }}" placeholder="Location" style="max-width:140px;"><button type="submit">Save</button>
+    </form></td>
         </div>
 
         <div class="lead-table-wrapper">
@@ -68,7 +74,7 @@
                         </a>
                     </td>
 
-                    <td>{{ lead.location|default:"—" }}</td>
+                    <td>{{ lead.location|default:"—" }}<br><a href="{% url 'edit_whatsapp_lead_location' lead.id %}" class="delete-lead">✏ Edit</a></td>
 
                     <td>
                         <form method="POST" class="status-form">
