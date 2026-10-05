@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 
+
 urlpatterns = [
     path('', views.home, name='home'),
     path('contact/',views.contact, name='contact'),
@@ -14,6 +15,7 @@ urlpatterns = [
     path('dashboard/whatsapp-leads/delete/<int:lead_id>/', views.delete_whatsapp_lead, name='delete_whatsapp_lead'),
     path('dashboard/whatsapp-leads/download/', views.export_whatsapp_leads, name='export_whatsapp_leads'),
     path('dashboard/export/',views.export_leads, name='export_leads'),
+    path('meta/product-feed.csv', views.meta_product_feed, name='meta_product_feed'),
     path('gallery/', views.gallery, name='gallery'),
     path('buy-now/<int:product_id>/',views.buy_now, name='buy_now'),
     path('product/<str:sku>/', views.product_detail, name='product_detail'),

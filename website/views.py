@@ -19,7 +19,6 @@ USERNAME_TO_FULLNAME ={
     "suraj": "Suraj Jaiswal"
 }
 
-
 def team_login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -346,31 +345,6 @@ def contact(request):
 
     return render(request, 'website/contact.html')
 
-# def contact(request):
-#     if request.method == 'POST':
-#         name = request.POST.get('name')
-#         phone = request.POST.get('phone')
-#         email = request.POST.get('email')
-#         message = request.POST.get('message')
-#         location = request.POST.get('location')
-
-#         total_so_far = ContactMessage.objects.count()
-#         assigned_person = MARKETING_TEAM[total_so_far % len(MARKETING_TEAM)]
-
-#         ContactMessage.objects.create(
-#             name=name, phone=phone, email=email,
-#             message=message, location=location, assigned_to=assigned_person
-#         )
-
-#         number = MARKETING_WHATSAPP.get(assigned_person)
-#         whatsapp_message = f"Hi, I'm {name} from {location or 'unknown location'}, I submitted an inquiry: {message or 'General inquiry'}"
-#         whatsapp_url = f"https://wa.me/{number}?text={whatsapp_message}"
-
-#         # Email notification goes here once app password is ready
-#         return render(request,'website/contact_success.html', {'whatsapp_url': whatsapp_url})
-#         # return redirect('contact_success')
-
-#     return render(request, 'website/contact.html')
 
 def contact_success(request):
     return render(request, 'website/contact_success.html')
@@ -459,17 +433,6 @@ def add_to_cart(request, product_id):
     )
 
     return response
-# def add_to_cart(request, product_id):
-#     cart = request.session.get('cart', {})
-#     product_id_str = str(product_id)
-
-#     current_quantity = cart.get(product_id_str, 0)
-
-#     if current_quantity < 3000:
-#         cart[product_id_str] = current_quantity + 1
-
-#     request.session['cart'] = cart
-#     return redirect('view_cart')
 
 def view_cart(request):
     cart_id = request.COOKIES.get('cart_id')
@@ -502,21 +465,6 @@ def view_cart(request):
         }
     )
 
-# def view_cart(request):
-#     cart = request.session.get('cart', {})
-#     cart_items = []
-#     total = 0
-
-#     for product_id, quantity in cart.items():
-#         try:
-#             product = Product.objects.get(id=product_id)
-#             subtotal = product.price * quantity
-#             total += subtotal
-#             cart_items.append({'product': product, 'quantity': quantity, 'subtotal': subtotal})
-#         except Product.DoesNotExist:
-#             continue
-
-#     return render(request, 'website/cart.html', {'cart_items': cart_items, 'total': total})
 
 def remove_from_cart(request, product_id):
     cart_id = request.COOKIES.get('cart_id')
@@ -532,35 +480,6 @@ def remove_from_cart(request, product_id):
             pass
 
     return redirect('view_cart')
-# def remove_from_cart(request, product_id):
-#     cart = request.session.get('cart', {})
-#     cart.pop(str(product_id), None)
-#     request.session['cart'] = cart
-#     return redirect('view_cart')
-
-
-
-# def update_cart_quantity(request, product_id):
-#     if request.method == 'POST':
-#         cart = request.session.get('cart', {})
-
-#         try:
-#             quantity = int(request.POST.get('quantity', 1))
-#         except (ValueError, TypeError):
-#             quantity = 1
-
-#         if quantity > 3000:
-#             quantity = 3000
-
-#         if quantity >= 1:
-#             cart[str(product_id)] = quantity
-#         else:
-#             cart.pop(str(product_id), None)
-
-#         request.session['cart'] = cart
-#         request.session.modified = True
-
-#     return redirect('view_cart')
 
 def update_cart_quantity(request, product_id):
     if request.method == 'POST':
@@ -628,29 +547,6 @@ def checkout_cart(request):
 
     return redirect(whatsapp_url)
 
-# def checkout_cart(request):
-#     cart = request.session.get('cart', {})
-#     if not cart:
-#         return redirect('view_cart')
-
-#     total_so_far = BuyNowClick.objects.count()
-#     assigned_person = MARKETING_TEAM[total_so_far % len(MARKETING_TEAM)]
-
-#     lines = []
-#     for product_id, quantity in cart.items():
-#         try:
-#             product = Product.objects.get(id=product_id)
-#             lines.append(f"{product.name} x{quantity}")
-#             BuyNowClick.objects.create(product=product, assigned_to=assigned_person)
-#         except Product.DoesNotExist:
-#             continue
-
-#     message = "Hi, I'm interested in ordering:\n" + "\n".join(lines)
-#     number = MARKETING_WHATSAPP.get(assigned_person)
-#     whatsapp_url = f"https://wa.me/{number}?text={message}"
-
-#     request.session['cart'] = {}
-#     return redirect(whatsapp_url)
 
 import openpyxl
 
@@ -682,39 +578,6 @@ def delete_excel(request, file_id):
         file.delete()
 
     return redirect('import_excel')
-
-# @login_required
-# def import_excel(request):
-#     full_name = USERNAME_TO_FULLNAME.get(request.user.username)
-
-#     if request.method == 'POST':
-#         excel_file = request.FILES.get('excel_file')
-#         if not excel_file:
-#             return redirect('dashboard')
-
-#         LeadExcelFile.objects.create(file=excel_file)
-#         # excel_file.seek(0)
-
-#         # wb = openpyxl.load_workbook(excel_file)
-#         # sheet = wb.active
-
-#         # for row in sheet.iter_rows(min_row=2, values_only=True):
-#         #     name, phone, email, location, message = (row + (None,) * 5)[:5]
-#         #     if not name:
-#         #         continue
-#         #     ContactMessage.objects.create(
-#         #         name=str(name),
-#         #         phone=str(phone) if phone else '',
-#         #         email=str(email) if email else '',
-#         #         location=str(location) if location else '',
-#         #         message=str(message) if message else 'Imported from Excel',
-#         #         assigned_to=full_name,
-#         #         status='new'
-#         #     )
-
-#         return redirect('dashboard')
-
-#     return render(request, 'website/import_excel.html', {'name': full_name, 'files':files})
 
 @login_required
 def delete_lead(request, lead_id):
@@ -757,27 +620,48 @@ def submit_popup(request):
         return response
 
     return redirect('home')
-# def submit_popup(request):
-#     if request.method == 'POST':
-#         name = request.POST.get('name', '').strip()
-#         phone = request.POST.get('phone', '').strip()
-#         profession = request.POST.get('profession', '').strip()
-#         interested_in = request.POST.get('interested_in', '').strip()
 
-#         if not name.replace(' ', '').isalpha():
-#             return redirect('home')
+import csv
+from django.http import HttpResponse
+from .models import Product
 
-#         if not phone.isdigit() or len(phone) != 10:
-#             return redirect('home')
 
-#         PopupLead.objects.create(
-#             name=name,
-#             phone=phone,
-#             profession=profession,
-#             interested_in=interested_in,
-#         )
+def meta_product_feed(request):
+    products = Product.objects.select_related('category').all()
 
-#     return redirect('home')
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="meta-product-feed.csv"'
+
+    writer = csv.writer(response)
+
+    writer.writerow([
+        'id',
+        'title',
+        'description',
+        'availability',
+        'condition',
+        'price',
+        'link',
+        'image_link',
+        'brand',
+        'product_type',
+    ])
+
+    for product in products:
+        writer.writerow([
+            product.sku,
+            product.name,
+            product.description,
+            'in stock',
+            'new',
+            f'{product.price} INR',
+            f'https://spectrumlighting.in/product/{product.sku}/',
+            product.cover_image(),
+            'Spectrum Technologies',
+            product.category.name if product.category else '',
+        ])
+
+    return response
 
 
 def privacy_policy(request):
