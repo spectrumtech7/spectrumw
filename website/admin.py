@@ -22,10 +22,10 @@ class ProductSpecificationInline(admin.TabularInline):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name','category','price','is_bestseller')
-    list_filter = ('category','is_bestseller',)
-    search_fields = ('name','description')
-    ordering = ('model_number',)
+    list_display = ('sku', 'name', 'category', 'price', 'is_bestseller')
+    list_filter = ('category', 'is_bestseller')
+    search_fields = ('sku', 'name', 'description')
+    ordering = ('sku', 'model_number')
     inlines = [ProductImageInline, ProductVideoInline, ProductSpecificationInline]
 
 @admin.register(ContactMessage)
@@ -52,7 +52,7 @@ class GalleryItemAdmin(admin.ModelAdmin):
 
 @admin.register(ProductCategory)
 class ProductCategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'order')
+    list_display = ('code', 'name', 'order')
     
 
 # Register your models here.

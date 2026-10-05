@@ -402,25 +402,25 @@ def buy_now(request, product_id):
 
     return redirect(whatsapp_url)
 
-def product_detail(request, product_id):
-    product = Product.objects.get(id=product_id)
+def product_detail(request, sku):
+    product = Product.objects.get(sku=sku)
     angle_order = ['front','back','side','cross']
-    images = sorted(product.images.all(), key=lambda img: angle_order.index(img.angle)if img.angle in angle_order else 99)
+    images = sorted(product.images.all(), key=lambda img: angle_order.index(img.angle) if img.angle in angle_order else 99)
     videos = product.videos.all()
     specifications = product.specifications.all()
-    return render(request, 'website/product_detail.html',{
-        'product':product,
-        'images':images,
-        'videos':videos,
-        'specifications':specifications,
+    return render(request, 'website/product_detail.html', {
+        'product': product,
+        'images': images,
+        'videos': videos,
+        'specifications': specifications,
     })
 
 def products_list(request):
     categories = ProductCategory.objects.prefetch_related('products').all()
     return render(request, 'website/products.html', {'categories': categories})
 
-def category_products(request, category_id):
-    category = ProductCategory.objects.get(id=category_id)
+def category_products(request, code):
+    category = ProductCategory.objects.get(code=code)
     products = category.products.all().order_by('model_number')
     return render(request, 'website/category_products.html', {'category': category, 'products': products})
 

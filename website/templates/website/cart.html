@@ -20,7 +20,7 @@
             <td style="padding:10px;">{{ item.product.name }}</td>
             <td style="padding:10px;">₹{{ item.product.price }}</td>
             <td style="padding:10px;">
-                <form method="POST" action="{% url 'update_cart_quantity' item.product.id %}" style="display:flex; gap:6px;">
+                <form method="POST" action="{% url 'update_cart_quantity' item.product.sku %}" style="display:flex; gap:6px;">
                     {% csrf_token %}
                     <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="3000" style="width:60px;">
                     <button type="submit">Update</button>
@@ -28,7 +28,7 @@
             </td>
             <td style="padding:10px;">₹{{ item.subtotal }}</td>
             <td style="padding:10px;">
-                <a href="{% url 'remove_from_cart' item.product.id %}" class="whatsapp-btn" style="background:#e53935;">✕</a>
+                <a href="{% url 'remove_from_cart' item.product.sku %}" class="whatsapp-btn" style="background:#e53935;">✕</a>
             </td>
         </tr>
         {% endfor %}

@@ -3,7 +3,6 @@ import cloudinary_storage
 from django.db import models
 
 
-
 STATUS_CHOICES={
     ('new', 'New'),
     ('contacted', 'Contacted'),
@@ -11,22 +10,26 @@ STATUS_CHOICES={
 }
 
 class Product(models.Model):
-    name = models.CharField(max_length=100)
+    sku = models.CharField(max_length=20, blank=True, default='')
+    name = models.CharField(max_length=200)
     model_number = models.IntegerField(default=0)
     category = models.ForeignKey('ProductCategory', on_delete=models.SET_NULL, null=True, blank=True, related_name='products')
     description = models.TextField(blank=True)
     price = models.DecimalField(max_digits=8, decimal_places=2)
-    image= models.ImageField(upload_to = 'products/')
+    image = models.ImageField(upload_to='products/')
     is_bestseller = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
-
     def cover_image(self):
         cross_image = self.images.filter(angle='cross').first()
         if cross_image:
             return cross_image.image.url
         return self.image.url
+
+    def save(self, *args, **kwargs):
+        self.sku = f"ST{self.model_number}"
+        super().save(*args, **kwargs)
 
 class Cart(models.Model):
     cart_id = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
@@ -144,12 +147,23 @@ class ProductSpecification(models.Model):
 class ProductCategory(models.Model):
     name = models.CharField(max_length=100)
     order = models.IntegerField(default=0)
+    code = models.CharField(max_length=20,blank=True, unique=True, default='')
 
     class Meta:
         ordering = ['order']
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.code:
+            last = ProductCategory.objects.exclude(code='').order_by('-id').first()
+            if last and last.code and last.code[3:].isdigit():
+                next_num = int(last.code[3:]) + 1
+            else:
+                next_num = 1
+            self.code = f"CAT{next_num:02d}"
+        super().save(*args, **kwargs)
 
 from cloudinary_storage.storage import RawMediaCloudinaryStorage
 
