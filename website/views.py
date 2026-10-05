@@ -626,10 +626,14 @@ from django.http import HttpResponse
 from .models import Product
 
 
-def meta_product_feed(request):
-    products = Product.objects.select_related('category').all()
+import csv
+from django.http import HttpResponse
+from .models import Product
 
-    response = HttpResponse(content_type='text/csv')
+def meta_product_feed(request):
+    products = Product.objects.select_related('category').order_by('model_number')
+
+    response = HttpResponse(content_type='text/csv; charset=utf-8')
     response['Content-Disposition'] = 'attachment; filename="meta-product-feed.csv"'
 
     writer = csv.writer(response)
@@ -648,6 +652,11 @@ def meta_product_feed(request):
     ])
 
     for product in products:
+        try:
+            image_url = product.cover_image()
+        except Exception:
+            image_url = ''
+
         writer.writerow([
             product.sku,
             product.name,
@@ -656,7 +665,7 @@ def meta_product_feed(request):
             'new',
             f'{product.price} INR',
             f'https://spectrumlighting.in/product/{product.sku}/',
-            product.cover_image(),
+            image_url,
             'Spectrum Technologies',
             product.category.name if product.category else '',
         ])
