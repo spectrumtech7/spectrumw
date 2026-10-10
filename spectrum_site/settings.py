@@ -168,5 +168,7 @@ STORAGES = {
     },
 }
 
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+
 LOGIN_URL = '/team-login/'
 LOGIN_REDIRECT_URL = '/dashboard/'
