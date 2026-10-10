@@ -686,6 +686,13 @@ def sitemap_xml(request):
     xml += '</urlset>'
     return HttpResponse(xml, content_type='application/xml')
 
+def robots_txt(request):
+    content = (
+        "User-agent: *\n"
+        "Allow: /\n\n"
+        "Sitemap: https://spectrumlighting.in/sitemap.xml\n"
+    )
+    return HttpResponse(content, content_type='text/plain')
 
 def privacy_policy(request):
     return render(request,'website/privacy_policy.html')

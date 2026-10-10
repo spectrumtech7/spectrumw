@@ -17,6 +17,7 @@ urlpatterns = [
     path('dashboard/export/',views.export_leads, name='export_leads'),
     path('meta/product-feed.csv', views.meta_product_feed, name='meta_product_feed'),
     path('sitemap.xml', views.sitemap_xml, name='sitemap_xml'),
+    path('robots.txt', views.robots_txt, name='robots_txt'),
     path('gallery/', views.gallery, name='gallery'),
     path('buy-now/<int:product_id>/',views.buy_now, name='buy_now'),
     path('product/<str:sku>/', views.product_detail, name='product_detail'),
