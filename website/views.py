@@ -621,14 +621,6 @@ def submit_popup(request):
 
     return redirect('home')
 
-import csv
-from django.http import HttpResponse
-from .models import Product
-
-
-import csv
-from django.http import HttpResponse
-from .models import Product
 
 def meta_product_feed(request):
     products = Product.objects.select_related('category').order_by('model_number')
@@ -671,6 +663,28 @@ def meta_product_feed(request):
         ])
 
     return response
+
+def sitemap_xml(request):
+    products = Product.objects.all()
+    categories = ProductCategory.objects.all()
+    urls = [
+        'https://spectrumlighting.in/',
+        'https://spectrumlighting.in/produts/',
+        'https://spectrumlighting.in/gallery/',
+        'https://spectrumlighting.in/about/',
+        'https://spectrumlighting.in/contact/',    
+    ]
+
+    for p in products:
+        urls.append(f'https://spectrumlighting.in/product/{p.sku}')
+    for c in categories:
+        urls.append(f'https://spectrumlighting.in/products/category/{c.code}')
+
+    xml = '<?xml version = "1.0" encoding="UTF-8"?>\n<urlset xmlns="https://www.sitemaps.org/schemas/sitemaps/0.9">\n'
+    for u in urls:
+        xml +=f' <url><loc>{u}</loc></url>\n'
+    xml += '</urlset>'
+    return HttpResponse(xml, content_type='application/xml')
 
 
 def privacy_policy(request):
