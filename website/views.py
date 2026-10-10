@@ -680,7 +680,7 @@ def sitemap_xml(request):
     for c in categories:
         urls.append(f'https://spectrumlighting.in/products/category/{c.code}')
 
-    xml = '<?xml version = "1.0" encoding="UTF-8"?>\n<urlset xmlns="https://www.sitemaps.org/schemas/sitemaps/0.9">\n'
+    xml = '<?xml version = "1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
     for u in urls:
         xml +=f' <url><loc>{u}</loc></url>\n'
     xml += '</urlset>'
