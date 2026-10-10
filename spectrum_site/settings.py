@@ -37,7 +37,7 @@ cloudinary.config(
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     "spectrumw-production.up.railway.app",
@@ -116,10 +116,6 @@ DATABASES = {
     #     'PORT': '5432',
     # }
 }
-    
-    
-
-
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
