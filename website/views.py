@@ -669,7 +669,7 @@ def sitemap_xml(request):
     categories = ProductCategory.objects.all()
     urls = [
         'https://spectrumlighting.in/',
-        'https://spectrumlighting.in/produts/',
+        'https://spectrumlighting.in/products/',
         'https://spectrumlighting.in/gallery/',
         'https://spectrumlighting.in/about/',
         'https://spectrumlighting.in/contact/',    
