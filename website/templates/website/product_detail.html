@@ -1,27 +1,6 @@
 {% extends "website/base.html" %}
 {% block title %}{{ product.name }} | Spectrum Technologies{% endblock %}
-{% block meta_description %}{% if product.description %}{{ product.description|truncatewords:30 }}{% else %}{{ product.name }} by Spectrum Technologies — premium LED lighting. {{ product.sku }} available now, view specifications and enquire.{% endif %}{% endblock %}
-{% block og_image %}{{ product.cover_image }}{% endblock %}
-{% block structured_data %}
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Product",
-  "name": "{{ product.name|escapejs }}",
-  "image": "{{ product.cover_image }}",
-  "sku": "{{ product.sku }}",
-  "description": "{% if product.description %}{{ product.description|escapejs|truncatewords:40 }}{% else %}{{ product.name|escapejs }} by Spectrum Technologies{% endif %}",
-  "brand": { "@type": "Brand", "name": "Spectrum Technologies" },
-  "offers": {
-    "@type": "Offer",
-    "priceCurrency": "INR",
-    "price": "{{ product.price }}",
-    "availability": "https://schema.org/InStock",
-    "url": "{{ request.build_absolute_uri }}"
-  }
-}
-</script>
-{% endblock %}
+
 {% block content %}
 <section class="contact-section">
     <div class="product-detail">

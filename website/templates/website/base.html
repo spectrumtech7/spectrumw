@@ -3,42 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Spectrum Technologies | Premium LED Lighting Manufacturer{% endblock %}</title>
-    <meta name="description" content="{% block meta_description %}Spectrum Technologies manufactures premium LED lighting — street lights, flood lights, highbay lights and solar lights — engineered for industrial, commercial and outdoor use. Based in Vapi, Gujarat, India.{% endblock %}">
-    <meta property="og:title" content="{% block title %}{% endblock %}">
-    <meta property="og:description" content="{% block meta_description %}{% endblock %}">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="{{ request.build_absolute_uri }}">
-    <meta property="og:image" content="{% block og_image %}https://spectrumlighting.in/static/images/logo.png{% endblock %}">
+    <title>{% block title %}Spectrum Technologies{% endblock %}</title>
     {% load static %}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    {% block structured_data %}{% endblock %}
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "Spectrum Technologies",
-  "url": "https://spectrumlighting.in/",
-  "logo": "https://spectrumlighting.in/static/images/logo.png",
-  "email": "spectrumtech7@gmail.com",
-  "telephone": "+91-8866264064",
-  "address": {
-    "@type": "PostalAddress",
-    "streetAddress": "Plot No. 196, Vibrant Business Park, Opp. UPL, NH No. 48, Near TATA Motor Showroom",
-    "addressLocality": "Vapi",
-    "addressRegion": "Gujarat",
-    "postalCode": "396195",
-    "addressCountry": "IN"
-  },
-  "sameAs": [
-    "https://facebook.com/SpectrumTechnologies",
-    "https://wa.me/918866264064"
-  ]
-}
-</script>
 </head>
 <body>
 
