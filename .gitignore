@@ -7,5 +7,9 @@ __pycache__/
 db.sqlite3
 .vscode/
 staticfiles/
+gallery/
+product_images/
+product_videos/
+products/
 data_backup_temp.json
 spectrumw/data_backup.json
