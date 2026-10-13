@@ -1,5 +1,5 @@
 {% extends "website/base.html" %}
-{% block title %}
+{% block title %}{{ product.name }} | Spectrum Technologies{% endblock %}
 {% block meta_description %}{% if product.description %}{{ product.description|truncatewords:30 }}{% else %}{{ product.name }} by Spectrum Technologies — premium LED lighting. {{ product.sku }} available now, view specifications and enquire.{% endif %}{% endblock %}
 {% block og_title %}{{ product.name }} | Spectrum Technologies{% endblock %}
 {% block og_description %}{% if product.description %}{{ product.description|truncatewords:30 }}{% else %}{{ product.name }} by Spectrum Technologies — premium LED lighting. {{ product.sku }} available now, view specifications and enquire.{% endif %}{% endblock %}
@@ -23,7 +23,7 @@
         }
     }
 </script>
-{% endblock %}{{ product.name }} | Spectrum Technologies{% endblock %}
+{% endblock %}
 
 {% block content %}
 <section class="contact-section">
