@@ -1,8 +1,16 @@
 {% extends "website/base.html" %}
 {% block title %}
-{% block meta_description %}Browse {{ category.name }} by Spectrum Technologies — premium LED lighting manufactured in Vapi, Gujarat. View specifications and pricing.{% endblock %}{{ category.name }} | Spectrum Technologies{% endblock %}
-{% block og_title %}{{ category.name }} | Spectrum Technologies{% endblock %}
-{% block og_description %}Browse {{ category.name }} by Spectrum Technologies — premium LED lighting manufactured in Vapi, Gujarat. View specifications and pricing.{% endblock %}
+    {{ category.name }} | Spectrum Technologies
+{% endblock %}
+{% block meta_description %}
+    Browse {{ category.name }} by Spectrum Technologies — premium LED lighting manufactured in Vapi, Gujarat. View specifications and pricing.
+{% endblock %}
+{% block og_title %}
+    {{ category.name }} | Spectrum Technologies
+{% endblock %}
+{% block og_description %}
+    Browse {{ category.name }} by Spectrum Technologies — premium LED lighting manufactured in Vapi, Gujarat. View specifications and pricing.
+{% endblock %}
 {% block content %}
 <section class="bestsellers">
     <h2>{{ category.name }}</h2>
