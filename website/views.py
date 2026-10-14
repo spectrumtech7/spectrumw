@@ -627,6 +627,8 @@ def submit_popup(request):
 def link_callback(uri, rel):
     if uri.startswith(settings.STATIC_URL):
         path = os.path.join(settings.BASE_DIR, 'static', uri.replace(settings.STATIC_URL, ''))
+        print("PDF image path:", path)
+        print("File exists:", os.path.exists(path))
         return path
     return uri
 
