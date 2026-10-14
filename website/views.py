@@ -2,6 +2,9 @@ import csv
 import os
 import openpyxl
 from django.db.models import Q
+from xhtml2pdf import pisa
+from django.template.loader import get_template
+from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
@@ -621,6 +624,21 @@ def submit_popup(request):
 
     return redirect('home')
 
+def link_callback(uri, rel):
+    if uri.startswith(settings.STATIC_URL):
+        path = os.path.join(settings.BASE_DIR, 'static', uri.replace(settings.STATIC_URL, ''))
+        return path
+    return uri
+
+def test_datasheet_pdf(request):
+    template = get_template('website/test_datasheet.html')
+    html = template.render({})
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'inline; filename="test_datasheet.pdf"'
+    pisa_status = pisa.CreatePDF(html, dest=response, link_callback=link_callback)
+    if pisa_status.err:
+        return HttpResponse('PDF generation failed', status=500)
+    return response
 
 def meta_product_feed(request):
     products = Product.objects.select_related('category').order_by('model_number')

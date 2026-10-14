@@ -1,0 +1,25 @@
+{% load static %}
+<html>
+<head>
+<style>
+  @page { size: A4; margin: 2cm; }
+  body { font-family: Helvetica, sans-serif; position: relative; }
+  .watermark {
+    position: absolute;
+    top: 35%; left: 15%;
+    width: 60%;
+    opacity: 0.08;
+  }
+  .header-logo { width: 90px; }
+  .content { position: relative; z-index: 2; }
+</style>
+</head>
+<body>
+  <img class="watermark" src="{% static 'images/logo.png' %}">
+  <div class="content">
+    <img class="header-logo" src="{% static 'images/logo.png' %}">
+    <h2>Test Datasheet</h2>
+    <p>This is a test page to confirm PDF generation works. If you can read this as a downloaded PDF, Step 1 is done.</p>
+  </div>
+</body>
+</html>
