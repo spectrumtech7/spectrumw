@@ -2,30 +2,67 @@
 <html>
 <head>
 <style>
-  @page { size: A4; margin: 2cm; }
-  body { font-family: Helvetica, sans-serif; }
-  .watermark {
-    position: absolute;
-    top: 214pt; left: 90pt;
-    width: 300pt;
+  @page {
+    size: A4;
+    margin: 2cm;
   }
+
+  body {
+    font-family: Helvetica, sans-serif;
+    color: #222222;
+  }
+
+  .header {
+    width: 100%;
+    border-bottom: 2px solid #1f4e79;
+    padding-bottom: 12px;
+  }
+
   .header-logo {
-    position: absolute;
-    top: 0pt; left: 0pt;
-    width: 70pt;
+    width: 85px;
   }
+
+  .watermark {
+    position: fixed;
+    top: 300px;
+    left: 110px;
+    width: 330px;
+  }
+
   .content {
-    position: relative;
-    top: 90pt;
+    padding-top: 35px;
+  }
+
+  h2 {
+    color: #1f4e79;
   }
 </style>
 </head>
 <body>
-  <img class="watermark" src="{% static 'images/logo_watermark.png' %}">
-  <img class="header-logo" src="{% static 'images/logo.png' %}">
+
+  <img class="watermark"
+       src="{% static 'images/logo_watermark.png' %}">
+
+  <table class="header">
+    <tr>
+      <td width="25%">
+        <img class="header-logo"
+             src="{% static 'images/logo.png' %}">
+      </td>
+      <td width="75%" align="right">
+        <b>SPECTRUM TECHNOLOGIES</b><br />
+        LED Lighting Solutions
+      </td>
+    </tr>
+  </table>
+
   <div class="content">
     <h2>Test Datasheet</h2>
-    <p>This is a test page to confirm PDF generation works. If you can read this as a downloaded PDF, Step 1 is done.</p>
+    <p>
+      This is a test page to confirm PDF generation works.
+      If you can read this as a downloaded PDF, Step 1 is done.
+    </p>
   </div>
+
 </body>
 </html>
