@@ -36,6 +36,5 @@ urlpatterns = [
     path('submit-popup/', views.submit_popup, name='submit_popup'),
     path('staff-access/', views.staff_access, name='staff_access'),
     path('dashboard/delete-excel/<int:file_id>/', views.delete_excel, name='delete_excel'),
-    path('test-datasheet/', views.test_datasheet_pdf, name='test_datasheet_pdf'),
    
 ]
