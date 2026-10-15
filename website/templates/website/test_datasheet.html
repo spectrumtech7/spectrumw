@@ -2,30 +2,29 @@
 <html>
 <head>
 <style>
-  @page { size: A4; margin: 2cm; }
+  @page {
+    size: A4;
+    margin: 2cm;
+
+    @frame watermark_frame {
+      -pdf-frame-content: watermark_content;
+      left: 148pt; top: 271pt; width: 300pt; height: 300pt;
+    }
+    @frame logo_frame {
+      -pdf-frame-content: logo_content;
+      left: 20pt; top: 20pt; width: 140pt; height: 70pt;
+    }
+  }
   body { font-family: Helvetica, sans-serif; }
-  .watermark {
-    position: absolute;
-    top: 214pt; left: 90pt;
-    width: 300pt;
-  }
-  .header-logo {
-    position: absolute;
-    top: 0pt; left: 0pt;
-    width: 70pt;
-  }
-  .content {
-    position: relative;
-    top: 90pt;
-  }
+  #logo_content img { width: 110pt; }
+  #watermark_content img { width: 300pt; }
 </style>
 </head>
 <body>
-  <img class="watermark" src="{% static 'images/logo_watermark_diagonal.png' %}">
-  <img class="header-logo" src="{% static 'images/logo.png' %}">
-  <div class="content">
-    <h2>Test Datasheet</h2>
-    <p>This is a test page to confirm PDF generation works. If you can read this as a downloaded PDF, Step 1 is done.</p>
-  </div>
+  <div id="watermark_content"><img src="{% static 'images/logo_watermark_diagonal.png' %}"></div>
+  <div id="logo_content"><img src="{% static 'images/logo.png' %}"></div>
+
+  <h2>Test Datasheet</h2>
+  <p>This is a test page to confirm PDF generation works. If you can read this as a downloaded PDF, Step 1 is done.</p>
 </body>
 </html>
