@@ -640,6 +640,21 @@ def test_datasheet_pdf(request):
         return HttpResponse('PDF generation failed', status=500)
     return response
 
+def product_datasheet_pdf(request, sku):
+    product = get_object_or_404(Product, sku=sku)
+    specifications = product.specifications.all()
+    template = get_template('website/product_datasheet.html')
+    html = template.render({
+        'product': product,
+        'specifications': specifications,
+    })
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename="{product.sku}_datasheet.pdf"'
+    pisa_status = pisa.CreatePDF(html, dest=response, link_callback=link_callback)
+    if pisa_status.err:
+        return HttpResponse('PDF generation failed', status=500)
+    return response
+
 def meta_product_feed(request):
     products = Product.objects.select_related('category').order_by('model_number')
 

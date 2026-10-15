@@ -37,4 +37,5 @@ urlpatterns = [
     path('staff-access/', views.staff_access, name='staff_access'),
     path('dashboard/delete-excel/<int:file_id>/', views.delete_excel, name='delete_excel'),
     path('test-datasheet.pdf', views.test_datasheet_pdf, name='test_datasheet_pdf'),
+    path('product/<str:sku>/datasheet.pdf', views.product_datasheet_pdf, name='product_datasheet_pdf'),
 ]

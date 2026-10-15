@@ -1,0 +1,51 @@
+{% load static %}
+<html>
+<head>
+<style>
+  @page {
+    size: A4;
+    margin: 2cm;
+
+    @frame watermark_frame {
+      -pdf-frame-content: watermark_content;
+      left: 148pt; top: 271pt; width: 300pt; height: 300pt;
+    }
+    @frame logo_frame {
+      -pdf-frame-content: logo_content;
+      left: 20pt; top: 20pt; width: 140pt; height: 70pt;
+    }
+    @frame content_frame {
+      left: 56pt; top: 110pt; width: 482pt; height: 670pt;
+    }
+  }
+  body { font-family: Helvetica, sans-serif; }
+  #logo_content img { width: 110pt; }
+  #watermark_content img { width: 300pt; }
+  .product-image { width: 200pt; margin-bottom: 10pt; }
+  h2 { color: #1f4e79; }
+  .price { font-size: 14pt; font-weight: bold; margin-bottom: 10pt; }
+  table.spec-table { width: 100%; border-collapse: collapse; }
+  table.spec-table td { border: 1px solid #cccccc; padding: 4pt 8pt; font-size: 10pt; }
+  table.spec-table td.label { font-weight: bold; width: 35%; background-color: #f2f2f2; }
+</style>
+</head>
+<body>
+  <div id="watermark_content"><img src="{% static 'images/logo_watermark_diagonal.png' %}"></div>
+  <div id="logo_content"><img src="{% static 'images/logo.png' %}"></div>
+
+  <h2>{{ product.name }}</h2>
+  <img class="product-image" src="{{ product.cover_image }}">
+  <p class="price">Price: Rs. {{ product.price }}</p>
+
+  <table class="spec-table">
+    {% for spec in specifications %}
+    <tr>
+      <td class="label">{{ spec.label }}</td>
+      <td>{{ spec.value }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="2">No specifications added yet.</td></tr>
+    {% endfor %}
+  </table>
+</body>
+</html>
