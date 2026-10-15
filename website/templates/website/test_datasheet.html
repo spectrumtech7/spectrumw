@@ -5,14 +5,18 @@
   @page {
     size: A4;
     margin: 2cm;
-
+    
     @frame watermark_frame {
       -pdf-frame-content: watermark_content;
       left: 148pt; top: 271pt; width: 300pt; height: 300pt;
     }
+    
     @frame logo_frame {
       -pdf-frame-content: logo_content;
       left: 20pt; top: 20pt; width: 140pt; height: 70pt;
+    }
+    @frame content_frame {
+      left: 56pt; top: 110pt; width: 482pt; height: 670pt;
     }
   }
   body { font-family: Helvetica, sans-serif; }
