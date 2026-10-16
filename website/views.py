@@ -384,7 +384,7 @@ def product_detail(request, sku):
     angle_order = ['front','back','side','cross']
     images = sorted(product.images.all(), key=lambda img: angle_order.index(img.angle) if img.angle in angle_order else 99)
     videos = product.videos.all()
-    specifications = product.specifications.all()
+    specifications = product.specifications.exclude(value='')
     return render(request, 'website/product_detail.html', {
         'product': product,
         'images': images,
@@ -642,7 +642,7 @@ def test_datasheet_pdf(request):
 
 def product_datasheet_pdf(request, sku):
     product = get_object_or_404(Product, sku=sku)
-    specifications = product.specifications.all()
+    specifications = product.specifications.exclude(value='')
     template = get_template('website/product_datasheet.html')
     html = template.render({
         'product': product,
