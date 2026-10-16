@@ -135,7 +135,8 @@ class ProductVideo(models.Model):
 class ProductSpecification(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='specifications')
     label = models.CharField(max_length=100)
-    value = models.CharField(max_length=200)
+    unit = models.CharField(max_length=50, blank=True, default='')
+    value = models.CharField(max_length=200, blank=True, default='')
     order = models.IntegerField(default=0)
 
     class Meta:
