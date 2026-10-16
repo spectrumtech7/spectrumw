@@ -6,21 +6,16 @@
     size: A4;
     margin: 2cm;
 
-    @frame watermark_frame {
-      -pdf-frame-content: watermark_content;
-      left: 127pt; top: 230pt; width: 340pt; height: 340pt;
-    }
     @frame logo_frame {
       -pdf-frame-content: logo_content;
-      left: 20pt; top: 20pt; width: 140pt; height: 70pt;
+      left: 20pt; top: 20pt; width: 230pt; height: 100pt;
     }
     @frame content_frame {
-      left: 56pt; top: 110pt; width: 482pt; height: 670pt;
+      left: 56pt; top: 130pt; width: 482pt; height: 650pt;
     }
   }
   body { font-family: Helvetica, sans-serif; }
-  #logo_content img { width: 110pt; }
-  #watermark_content img { width: 340pt; }
+  #logo_content img { width: 200pt; }
 
   h1.product-name {
     font-size: 22pt;
@@ -69,7 +64,6 @@
 </style>
 </head>
 <body>
-  <div id="watermark_content"><img src="{% static 'images/logo_watermark_diagonal.png' %}"></div>
   <div id="logo_content"><img src="{% static 'images/logo.png' %}"></div>
 
   <h1 class="product-name">{{ product.name }}</h1>
