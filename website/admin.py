@@ -20,6 +20,45 @@ class ProductSpecificationInline(admin.TabularInline):
     model = ProductSpecification
     extra = 4
 
+STANDARD_SPECS = [
+    ('Power Consumption', 'W'),
+    ('Colour Temperature', 'K'),
+    ('Beam Angle', 'Degree'),
+    ('Optical Cover', 'Material'),
+    ('Light Source', 'Material'),
+    ('Housing Material', 'Material'),
+    ('Voltage Range', 'V'),
+    ('Protection Rating', 'Standard'),
+    ('No. of LEDs', 'Number'),
+    ('Lumens/LED', 'lm/W'),
+    ('Maximum Lumens', 'lm'),
+    ('Operating Temperature', '°C'),
+    ('Driver', 'Standard'),
+    ('Power Factor', ''),
+    ('Warranty', 'Years'),
+    ('Weight', 'Kg'),
+    ('Lifespan', 'Hours'),
+    ('Surge Voltage Protection', 'KV'),
+    ('Short Circuit Protection', ''),
+    ('High Voltage Protection', 'VAC'),
+    ('Surge Protector Device', ''),
+]
+
+
+@admin.action(description='Add standard specification rows to selected products')
+def add_standard_specifications(modeladmin, request, queryset):
+    created = 0
+    for product in queryset:
+        for index, (label, unit) in enumerate(STANDARD_SPECS, start=1):
+            _, was_created = ProductSpecification.objects.get_or_create(
+                product=product,
+                label__iexact=label,
+                defaults={'label': label, 'unit': unit, 'value': '', 'order': index},
+            )
+            if was_created:
+                created += 1
+    modeladmin.message_user(request, f'{created} rows added.')
+
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('sku', 'name', 'category', 'price', 'is_bestseller')
@@ -27,6 +66,7 @@ class ProductAdmin(admin.ModelAdmin):
     search_fields = ('sku', 'name', 'description')
     ordering = ('sku', 'model_number')
     inlines = [ProductImageInline, ProductVideoInline, ProductSpecificationInline]
+    actions = [add_standard_specifications]
 
 @admin.register(ContactMessage)
 class ContactMessageAdmin(admin.ModelAdmin):
