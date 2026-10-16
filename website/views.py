@@ -630,15 +630,15 @@ def link_callback(uri, rel):
         return path
     return uri
 
-def test_datasheet_pdf(request):
-    template = get_template('website/test_datasheet.html')
-    html = template.render({})
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'inline; filename="test_datasheet.pdf"'
-    pisa_status = pisa.CreatePDF(html, dest=response, link_callback=link_callback)
-    if pisa_status.err:
-        return HttpResponse('PDF generation failed', status=500)
-    return response
+# def test_datasheet_pdf(request):
+#     template = get_template('website/test_datasheet.html')
+#     html = template.render({})
+#     response = HttpResponse(content_type='application/pdf')
+#     response['Content-Disposition'] = 'inline; filename="test_datasheet.pdf"'
+#     pisa_status = pisa.CreatePDF(html, dest=response, link_callback=link_callback)
+#     if pisa_status.err:
+#         return HttpResponse('PDF generation failed', status=500)
+#     return response
 
 def product_datasheet_pdf(request, sku):
     product = get_object_or_404(Product, sku=sku)
