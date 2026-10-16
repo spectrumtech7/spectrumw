@@ -53,7 +53,7 @@
             <div class="product-actions">
                 <a href="{% url 'buy_now' product.id %}" class="btn-primary">Buy Now</a>
                  <a href="{% url 'add_to_cart' product.id %}" class="btn-primary">Add to Cart</a> 
-                 <button onclick="document.getElementById('specTable').classList.toggle('open')" class='btn-primary'>View Full Specifications</button>
+                 <!-- <button onclick="document.getElementById('specTable').classList.toggle('open')" class='btn-primary'>View Full Specifications</button> -->
                  <a href="{% url 'product_datasheet_pdf' product.sku %}" class="btn-primary" target="_blank">Download Datasheet (PDF)</a>
             </div>
             <div class="spec-toggle">
