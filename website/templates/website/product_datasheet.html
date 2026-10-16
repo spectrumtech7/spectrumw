@@ -11,55 +11,49 @@
       left: 20pt; top: 20pt; width: 230pt; height: 100pt;
     }
     @frame content_frame {
-      left: 56pt; top: 130pt; width: 482pt; height: 650pt;
+      left: 40pt; top: 130pt; width: 515pt; height: 650pt;
     }
   }
   body { font-family: Helvetica, sans-serif; }
   #logo_content img { width: 200pt; }
 
   h1.product-name {
-    font-size: 22pt;
+    font-size: 20pt;
     font-weight: bold;
     color: #1f4e79;
-    margin-bottom: 4pt;
+    text-align: center;
+    text-decoration: underline;
+    margin-bottom: 6pt;
   }
   .price {
-    font-size: 13pt;
+    font-size: 12pt;
     font-weight: bold;
-    margin-bottom: 16pt;
+    text-align: center;
+    margin-bottom: 8pt;
   }
-
-  table.layout-table {
-    width: 100%;
-    border-collapse: collapse;
+  .photo {
+    text-align: center;
+    margin-bottom: 12pt;
   }
-  table.layout-table td {
-    vertical-align: top;
-  }
-  td.photo-cell {
-    width: 45%;
-    padding-right: 12pt;
-  }
-  td.spec-cell {
-    width: 55%;
-  }
-  .product-image {
-    width: 190pt;
-  }
+  .product-image { width: 170pt; }
 
   table.spec-table {
     width: 100%;
     border-collapse: collapse;
   }
   table.spec-table td {
-    border: 1px solid #cccccc;
-    padding: 4pt 8pt;
+    border: 1px solid #000000;
+    padding: 5pt 8pt;
     font-size: 10pt;
   }
-  table.spec-table td.label {
+  table.spec-table td.no { width: 8%; text-align: center; }
+  table.spec-table td.label { width: 36%; font-weight: bold; }
+  table.spec-table td.unit { width: 14%; text-align: center; }
+  table.spec-table td.th {
     font-weight: bold;
-    width: 40%;
-    background-color: #f2f2f2;
+    text-align: center;
+    background-color: #1f4e79;
+    color: #ffffff;
   }
 </style>
 </head>
@@ -69,24 +63,25 @@
   <h1 class="product-name">{{ product.name }}</h1>
   <p class="price">Price: Rs. {{ product.price }}</p>
 
-  <table class="layout-table">
+  <div class="photo"><img class="product-image" src="{{ product.cover_image }}"></div>
+
+  <table class="spec-table">
     <tr>
-      <td class="photo-cell">
-        <img class="product-image" src="{{ product.cover_image }}">
-      </td>
-      <td class="spec-cell">
-        <table class="spec-table">
-          {% for spec in specifications %}
-          <tr>
-            <td class="label">{{ spec.label }}</td>
-            <td>{{ spec.value }}</td>
-          </tr>
-          {% empty %}
-          <tr><td colspan="2">No specifications added yet.</td></tr>
-          {% endfor %}
-        </table>
-      </td>
+      <td class="th no">No.</td>
+      <td class="th">Parameter</td>
+      <td class="th">Unit</td>
+      <td class="th">Value</td>
     </tr>
+    {% for spec in specifications %}
+    <tr>
+      <td class="no">{{ forloop.counter }}</td>
+      <td class="label">{{ spec.label }}</td>
+      <td class="unit">{{ spec.unit }}</td>
+      <td>{{ spec.value }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4">No specifications added yet.</td></tr>
+    {% endfor %}
   </table>
 </body>
 </html>
