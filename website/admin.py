@@ -4,7 +4,11 @@ from .models import LeadExcelFile, Product, ContactMessage, GalleryCategory, Gal
 admin.site.register(BuyNowClick)
 admin.site.register(ProductImage)
 admin.site.register(ProductVideo)
-admin.site.register(ProductSpecification)
+
+@admin.register(ProductSpecification)
+class ProductSpecificationAdmin(admin.ModelAdmin):
+    fields = ('product', 'label', 'value', 'order')
+
 admin.site.register(PopupLead)
 admin.site.register(LeadExcelFile)
 
@@ -18,6 +22,7 @@ class ProductVideoInline(admin.TabularInline):
 
 class ProductSpecificationInline(admin.TabularInline):
     model = ProductSpecification
+    fields = ('label', 'value', 'order')
     extra = 4
 
 STANDARD_SPECS = [
@@ -65,13 +70,16 @@ def add_standard_specifications(modeladmin, request, queryset):
     for product in queryset:
         removed += product.specifications.filter(value='').delete()[0]
         for index, (label, unit) in enumerate(STANDARD_SPECS, start=1):
-            _, was_created = ProductSpecification.objects.get_or_create(
+            spec, was_created = ProductSpecification.objects.get_or_create(
                 product=product,
                 label__iexact=label,
                 defaults={'label': label, 'unit': unit, 'value': '', 'order': index},
             )
             if was_created:
                 created += 1
+            elif spec.order != index:
+                spec.order = index
+                spec.save(update_fields=['order'])
     modeladmin.message_user(request, f'{removed} blank rows removed, {created} rows added.')
 
 @admin.register(Product)
