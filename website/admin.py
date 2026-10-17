@@ -21,34 +21,49 @@ class ProductSpecificationInline(admin.TabularInline):
     extra = 4
 
 STANDARD_SPECS = [
-    ('Power Consumption', 'W'),
-    ('Colour Temperature', 'K'),
-    ('Beam Angle', 'Degree'),
-    ('Optical Cover', 'Material'),
-    ('Light Source', 'Material'),
-    ('Housing Material', 'Material'),
-    ('Voltage Range', 'V'),
-    ('Protection Rating', 'Standard'),
-    ('No. of LEDs', 'Number'),
-    ('Lumens/LED', 'lm/W'),
-    ('Maximum Lumens', 'lm'),
-    ('Operating Temperature', '°C'),
-    ('Driver', 'Standard'),
-    ('Power Factor', ''),
-    ('Warranty', 'Years'),
+    ('Pipe ID', 'mm'),
+    ('Master Box', 'Pcs'),
+    ('Overall Size', 'mm'),
+    ('Model', ''),
+    ('Certification', ''),
+    ('Number of LEDs', 'Nos'),
+    ('Wattage', 'W'),
+    ('Dimension', 'mm'),
+    ('Optical lens', ''),
     ('Weight', 'Kg'),
-    ('Lifespan', 'Hours'),
-    ('Surge Voltage Protection', 'KV'),
-    ('Short Circuit Protection', ''),
-    ('High Voltage Protection', 'VAC'),
-    ('Surge Protector Device', ''),
+    ('LED Brand', ''),
+    ('Power Consumption', 'W'),
+    ('LED Lumens Efficiency', 'lm/W'),
+    ('Maximum Lumens', 'lm'),
+    ('Beam Angle', 'Degree'),
+    ('LED Working Voltage', 'VDC'),
+    ('LED Working Current', 'mA'),
+    ('Input Voltage', 'VAC'),
+    ('Operating Frequency', 'Hz'),
+    ('Power Factor', ''),
+    ('Ambient Temp (Ta)', '°C'),
+    ('Case Temp (Tc)', '°C'),
+    ('CRI', ''),
+    ('Efficiency', '%'),
+    ('Color', ''),
+    ('Color Temperature', 'K'),
+    ('Body Type', ''),
+    ('IP rating', ''),
+    ('Working Hours', 'Hours'),
+    ('Surge Protection', 'KV'),
+    ('Electrical Protections for LED Driver', ''),
+    ('LED PCB Detail', ''),
+    ('Additional Features', ''),
+    ('Terminology', ''),
 ]
 
 
-@admin.action(description='Add standard specification rows to selected products')
+@admin.action(description='Reset standard specification rows (keeps rows that have values)')
 def add_standard_specifications(modeladmin, request, queryset):
     created = 0
+    removed = 0
     for product in queryset:
+        removed += product.specifications.filter(value='').delete()[0]
         for index, (label, unit) in enumerate(STANDARD_SPECS, start=1):
             _, was_created = ProductSpecification.objects.get_or_create(
                 product=product,
@@ -57,7 +72,7 @@ def add_standard_specifications(modeladmin, request, queryset):
             )
             if was_created:
                 created += 1
-    modeladmin.message_user(request, f'{created} rows added.')
+    modeladmin.message_user(request, f'{removed} blank rows removed, {created} rows added.')
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
