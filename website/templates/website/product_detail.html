@@ -59,16 +59,12 @@
             <div class="spec-toggle">
                 <table id="specTable" class="spec-table open">
                     <tr>
-                        <td><strong>No.</strong></td>
                         <td><strong>Parameter</strong></td>
-                        <td><strong>Unit</strong></td>
                         <td><strong>Value</strong></td>
                     </tr>
                     {% for spec in specifications %}
                     <tr>
-                        <td>{{ forloop.counter }}</td>
                         <td class="spec-label">{{ spec.label }}</td>
-                        <td>{{ spec.unit }}</td>
                         <td class="spec-value">{{ spec.value }}</td>
                     </tr>
                     {% empty %}
