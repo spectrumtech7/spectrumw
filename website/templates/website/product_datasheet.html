@@ -17,6 +17,12 @@
       -pdf-frame-content: photo_content;
       left: 40pt; top: 110pt; width: 195pt; height: 420pt;
     }
+
+    @frame footer_frame{
+      -pdf-frame-content: footer_content;
+      left: 56pt; top: 790; width: 482pt; height: 35pt;
+    }
+
   }
   body { font-family: Helvetica, sans-serif; }
   #logo_content img { width: 120pt; }
@@ -34,6 +40,15 @@
     margin-bottom: 8pt;
   }
 
+  #footer_content {
+    font-size: 8pt;
+    color: #555555;
+    text-align: center;
+    border-top: 1px solid #cccccc;
+    padding-top: 5pt;
+    line-height: 12pt;
+  }
+
   table.spec-table { width: 100%; border-collapse: collapse; }
   table.spec-table td { border: 1px solid #000000; padding: 5pt 6pt; font-size: 9pt; }
   table.spec-table td.label { width: 42%; font-weight: bold; }
@@ -43,7 +58,9 @@
 <body>
   <div id="logo_content"><img src="{% static 'images/logo.png' %}"></div>
   <div id="photo_content"><img src="{{ product.cover_image }}"></div>
-
+  <div id="footer_content">
+    Spectrum Technologies | <a href="https://www.spectrumlighting.in" target="_blank">www.spectrumlighting.in</a> | Address: Plot No. 196, Vibrant Business Park, Opp.UPL, NH No.48, Near TATA Motor Showroom Vapi, Gujarat - 396195 | Phone: +918866264064 | Email: spectrumtech7@gmail.com
+  </div>
   <h1 class="product-name">{{ product.name }}</h1>
   <p class="price">Price: Rs. {{ product.price }}</p>
 
