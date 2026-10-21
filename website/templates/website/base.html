@@ -212,15 +212,16 @@
         <form method="POST" action="{% url 'submit_popup' %}" id="popupForm">
             {% csrf_token %}
             <label>Name *</label>
-            <input type="text" name="name" pattern = "[A-Za-z\s]+" title="Name should contain only letters and spaces" required>
+            <input type="text" name="name" maxlength="60" required>
 
             <label>Contact Number *</label>
-            <input type="tel" name="phone" inputmode = "numeric" pattern="[0-9]{10}$" title="Please enter a valid 10-digit phone number" required>
+            <input type="tel" name="phone" inputmode = "tel" maxlength="15" placeholder="10-digit mobile number" required>
 
             <label>Profession *</label>
             <select name="profession" required>
                 <option value="">Select...</option>
                 <option value="Distributor">Distributor</option>
+
                 <option value="Electrical Shop Owner">Electrical Shop Owner</option>
                 <option value="Decorator">Decorator (Mandap)</option>
                 <option value="Other">Other</option>
@@ -228,6 +229,10 @@
 
             <label>Interested In</label>
             <input type="text" name="interested_in" placeholder="Optional">
+            <p class="popup-privacy">
+                Your name and mobile number are safe with us. We use them only to contact you about our products and never sell or share them with anyone outside Spectrum Technologies.
+                <a href="{% url 'privacy_policy' %}" target="_blank">Privacy Policy</a>
+            </p>
 
             <button type="submit" class="btn-primary">Submit</button>
         </form>
@@ -239,12 +244,69 @@
     const popupOverlay = document.getElementById('popupOverlay');
     const popupForm = document.getElementById('popupForm');
 
+    const JUNK_NAMES = ['abc','abcd','xyz','abc xyz','xyz abc','test','testing','tester','demo','name','your name','none','na','nil','null','admin','user','dummy','sample','fake','asdf','qwerty','unknown','customer','xxx'];
+    const SEQUENCES = ['abcdefghijklmnopqrstuvwxyz', 'qwertyuiop', 'asdfghjkl', 'zxcvbnm'];
+
+    function hasSequence(text) {
+        for (const seq of SEQUENCES) {
+            for (let i = 0; i <= seq.length - 4; i++) {
+                const w = seq.slice(i, i + 4);
+                if (text.includes(w) || text.includes(w.split('').reverse().join(''))) return true;
+            }
+        }
+        return false;
+    }
+
+    function checkName(raw) {
+        const name = raw.trim().replace(/\s+/g, ' ');
+        const letters = name.toLowerCase().replace(/[^a-z]/g, '');
+        const msg = 'Please enter your real name (letters only, at least 3 letters).';
+        if (!/^[A-Za-z][A-Za-z .'\-]*$/.test(name)) return msg;
+        if (letters.length < 3) return msg;
+        if (JUNK_NAMES.includes(name.toLowerCase()) || JUNK_NAMES.includes(letters)) return msg;
+        if (!/[aeiouy]/.test(letters)) return msg;
+        if (/(.)\1{2,}/.test(letters)) return msg;
+        if (hasSequence(letters)) return msg;
+        return '';
+    }
+
+    function checkPhone(raw) {
+        const text = raw.replace(/[\s-]/g, '');
+        const m = text.match(/^(?:\+91|91)?([6-9]\d{9})$/);
+        const msg = 'Please enter a valid 10-digit Indian mobile number.';
+        if (!m) return msg;
+        const number = m[1];
+        if (new Set(number).size <= 3) return msg;
+        for (const step of [1, -1]) {
+            let run = 0;
+            for (let i = 1; i < number.length; i++) {
+                run = (Number(number[i]) - Number(number[i - 1]) === step) ? run + 1 : 0;
+                if (run >= 5) return msg;
+            }
+        }
+        return '';
+    }
+
     if (popupOverlay && popupForm) {
         if (!sessionStorage.getItem('popupShown')) {
             popupOverlay.style.display = 'flex';
         }
 
-        popupForm.addEventListener('submit', function () {
+        const nameInput = popupForm.elements['name'];
+        const phoneInput = popupForm.elements['phone'];
+        nameInput.addEventListener('input', () => nameInput.setCustomValidity(''));
+        phoneInput.addEventListener('input', () => phoneInput.setCustomValidity(''));
+
+        popupForm.addEventListener('submit', function (e) {
+            const nameError = checkName(nameInput.value);
+            const phoneError = checkPhone(phoneInput.value);
+            nameInput.setCustomValidity(nameError);
+            phoneInput.setCustomValidity(phoneError);
+            if (nameError || phoneError) {
+                e.preventDefault();
+                popupForm.reportValidity();
+                return;
+            }
             sessionStorage.setItem('popupShown', 'true');
             popupOverlay.style.display = 'none';
         });

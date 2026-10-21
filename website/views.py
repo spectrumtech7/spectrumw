@@ -10,7 +10,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .models import Cart, CartItem, LeadExcelFile, PopupLead, WhatsAppLead, Product, ContactMessage, GalleryCategory,BuyNowClick, ProductCategory
-
+from .validators import clean_name, clean_phone
 
 MARKETING_TEAM = ["Hetal Dodhi", "Komal Wagh", "Bhagyashree Sonar", "Mamta Vishwakarma"]  # replace with real names
 
@@ -595,15 +595,12 @@ def delete_lead(request, lead_id):
 
 def submit_popup(request):
     if request.method == 'POST':
-        name = request.POST.get('name', '').strip()
-        phone = request.POST.get('phone', '').strip()
+        name, name_error = clean_name(request.POST.get('name', ''))
+        phone, phone_error = clean_phone(request.POST.get('phone', ''))
         profession = request.POST.get('profession', '').strip()
         interested_in = request.POST.get('interested_in', '').strip()
 
-        if not name.replace(' ', '').isalpha():
-            return redirect('home')
-
-        if not phone.isdigit() or len(phone) != 10:
+        if name_error or phone_error:
             return redirect('home')
 
         if not PopupLead.objects.filter(phone=phone).exists():

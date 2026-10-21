@@ -1098,7 +1098,21 @@ table button:hover {
     padding: 30px;
     max-width: 400px;
     width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
 }
+
+.popup-privacy {
+    margin-top: 14px;
+    font-size: 12px;
+    line-height: 1.4;
+    color: #5a6b7d;
+}
+.popup-privacy a {
+    color: #0a4d8c;
+    text-decoration: underline;
+}
+
 .popup-box label {
     display: block;
     margin-top: 12px;
