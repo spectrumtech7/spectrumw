@@ -380,7 +380,7 @@ def buy_now(request, product_id):
     return redirect(whatsapp_url)
 
 def product_detail(request, sku):
-    product = Product.objects.get(sku=sku)
+    product = get_object_or_404(Product, sku=sku)
     angle_order = ['front','back','side','cross']
     images = sorted(product.images.all(), key=lambda img: angle_order.index(img.angle) if img.angle in angle_order else 99)
     videos = product.videos.all()
@@ -397,7 +397,7 @@ def products_list(request):
     return render(request, 'website/products.html', {'categories': categories})
 
 def category_products(request, code):
-    category = ProductCategory.objects.get(code=code)
+    category = get_object_or_404(ProductCategory, code=code)
     products = category.products.all().order_by('model_number')
     return render(request, 'website/category_products.html', {'category': category, 'products': products})
 
