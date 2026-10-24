@@ -288,8 +288,17 @@
     }
 
     if (popupOverlay && popupForm) {
+        const POPUP_DELAY_MS = 15000;
         if (!sessionStorage.getItem('popupShown')) {
-            popupOverlay.style.display = 'flex';
+            let start = Number(sessionStorage.getItem('popupStart'));
+            if (!start) {
+                start = Date.now();
+                sessionStorage.setItem('popupStart', String(start));
+            }
+            const wait = Math.max(0, POPUP_DELAY_MS - (Date.now() - start));
+            setTimeout(function () {
+                popupOverlay.style.display = 'flex';
+            }, wait);
         }
 
         const nameInput = popupForm.elements['name'];

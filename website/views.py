@@ -706,9 +706,9 @@ def sitemap_xml(request):
     ]
 
     for p in products:
-        urls.append(f'https://spectrumlighting.in/product/{p.sku}')
+        urls.append(f'https://spectrumlighting.in/product/{p.sku}/')
     for c in categories:
-        urls.append(f'https://spectrumlighting.in/products/category/{c.code}')
+        urls.append(f'https://spectrumlighting.in/products/category/{c.code}/')
 
     xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
     for u in urls:
